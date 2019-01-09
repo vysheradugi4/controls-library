@@ -1,4 +1,69 @@
-# ControlsLibraryApp
+# Controls library – Angular 6+ form controls library.
+
+For angular 6+ versions apps. Custom controls for input
+currency, percents, positive numbers.
+
+## Installation.
+
+Run for installation Components Library in your project.   
+   
+`npm install silly-datatable --save`   
+   
+   
+Add in import section in your module
+
+`ControlsLibraryModule`   
+   
+   
+Don't forget import this module:
+
+`import { ControlsLibraryModule } from 'controls-library';`
+   
+   
+## Currency input form control.
+
+Add
+
+`<currency-input></number-range-input>`
+
+tag for use currency input in your template form.
+   
+   
+### Currency input form control attributes.
+
+* controlClass – Css class name for input.
+   
+
+
+## Number range input form control.
+
+Add 
+   
+`<number-range-input></number-range-input>`
+
+tag for use number range input in your template form.
+   
+
+### Number range input form control attributes.
+
+* controlClass – Css class name for input.
+   
+   
+
+## Positive numbers input form control.
+
+Add 
+
+`<positive-numbers-input></positive-numbers-input>`
+
+tag for use positive numbers input in your template form.
+
+  
+### Positive numbers input form control attributes.
+
+* controlClass – Css class name for input.
+
+   
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
 

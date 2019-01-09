@@ -1,4 +1,10 @@
-# ControlsLibraryApp
+# Controls library – Angular 6+ form controls library.
+
+## Currency input form control.
+
+## Number range input form control.
+
+## Positive numbers input form control.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
 

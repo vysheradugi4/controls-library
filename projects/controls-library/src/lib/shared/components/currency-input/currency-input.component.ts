@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'number-range-input',
-  templateUrl: './number-range-input.component.html',
+  selector: 'currency-input',
+  templateUrl: './currency-input.component.html',
   styles: [],
 })
-export class NumberRangeInputComponent implements OnInit {
+export class CurrencyInputComponent implements OnInit {
 
   /**
    * Css class name for input.
