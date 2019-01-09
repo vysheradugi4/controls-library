@@ -7,7 +7,7 @@ currency, percents, positive numbers.
 
 Run for installation Components Library in your project.   
    
-`npm install silly-datatable --save`   
+`npm install controls-library --save`   
    
    
 Add in import section in your module
