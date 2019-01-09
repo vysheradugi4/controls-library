@@ -16,6 +16,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "controls-library": [
+        "dist/controls-library"
+      ],
+      "controls-library/*": [
+        "dist/controls-library/*"
+      ]
+    }
   }
 }

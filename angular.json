@@ -133,6 +133,41 @@
           }
         }
       }
+    },
+    "controls-library": {
+      "root": "projects/controls-library",
+      "sourceRoot": "projects/controls-library/src",
+      "projectType": "library",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/controls-library/tsconfig.lib.json",
+            "project": "projects/controls-library/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/controls-library/src/test.ts",
+            "tsConfig": "projects/controls-library/tsconfig.spec.json",
+            "karmaConfig": "projects/controls-library/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/controls-library/tsconfig.lib.json",
+              "projects/controls-library/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "controls-library-app"
