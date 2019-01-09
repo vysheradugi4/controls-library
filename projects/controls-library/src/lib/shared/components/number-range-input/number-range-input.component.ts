@@ -43,9 +43,12 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
   /**
    * Input placeholder.
    */
-  @Input() public placeholder: string;
+  @Input() public placeholder = '';
 
 
+  /**
+   * Template suffix after input form control.
+   */
   @Input() public suffix: TemplateRef<any>;
 
 
