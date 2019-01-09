@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.form = new FormGroup({
-      range: new FormControl('123')
+      range: new FormControl(99)
     });
 
     this.form.get('range').valueChanges

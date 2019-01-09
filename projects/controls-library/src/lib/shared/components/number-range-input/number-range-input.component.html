@@ -1,7 +1,8 @@
 <input
+    #inputControl
     type="text"
     [ngClass]="controlClass"
     [value]="value"
     (input)="onChange($event.target.value)"
     (blur)="touched()"
-    [disabled]="disable">
+    [disabled]="disabled">

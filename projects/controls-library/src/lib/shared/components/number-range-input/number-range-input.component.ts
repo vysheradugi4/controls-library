@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -17,8 +17,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
   public value: string;
-  public disable: boolean;
+  public disabled: boolean;
   public touched: Function;
+
+  @ViewChild('inputControl') public inputControl: ElementRef;
 
   /**
    * Css class name for input.
@@ -39,6 +41,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   private change: Function;
+  private lastValue: string;
 
 
   constructor() { }
@@ -51,13 +54,27 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   public onChange(value: string) {
+    if (isNaN(+value) || +value < this.minValue || +value > this.maxValue) {
+      this.value = this.lastValue;
+      this.inputControl.nativeElement.value = this.value;
+      return;
+    }
+
     this.value = value;
+    this.lastValue = this.value;
     this.change(value);
   }
 
 
   writeValue(value: string): void {
-    this.value = value || '';
+
+    this.value = value;
+
+    if (isNaN(+value) || +value < this.minValue || +value > this.maxValue) {
+      this.value = '0';
+    }
+
+    this.lastValue = this.value;
   }
 
 
@@ -72,6 +89,6 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   setDisabledState?(isDisabled: boolean): void {
-    this.disable = isDisabled;
+    this.disabled = isDisabled;
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "controls-library-app",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "npm-pack": "COPY /Y \"README.md\" \"projects/controls-library/README.md\" && COPY /Y \"LICENSE\" \"projects/controls-library/LICENSE\" && ng build --project=controls-library && cd dist/controls-library && npm pack"
+    "npm-pack": "cp -rf \"README.md\" \"projects/controls-library/README.md\" && cp -rf \"LICENSE\" \"projects/controls-library/LICENSE\" && ng build --project=controls-library && cd dist/controls-library && npm pack"
   },
   "private": true,
   "dependencies": {
