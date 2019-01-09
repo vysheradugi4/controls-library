@@ -24,7 +24,7 @@ Don't forget import this module:
 
 Add
 
-`<currency-input></number-range-input>`
+`<currency-input></currency-input>`
 
 tag for use currency input in your template form.
    
