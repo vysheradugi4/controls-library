@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -40,6 +40,15 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
   @Input() public maxValue: number;
 
 
+  /**
+   * Input placeholder.
+   */
+  @Input() public placeholder: string;
+
+
+  @Input() public suffix: TemplateRef<any>;
+
+
   private change: Function;
   private lastValue: string;
 
@@ -62,7 +71,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
     this.value = value;
     this.lastValue = this.value;
-    this.change(value);
+    this.change(+value);
   }
 
 

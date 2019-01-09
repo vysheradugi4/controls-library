@@ -10,8 +10,16 @@
       controlClass="range"
       formControlName="range"
       minValue=0
-      maxValue=100>
+      maxValue=100
+      placeholder="test"
+      [suffix]="suffix">
     </number-range-input>
+
+    <ng-template #suffix>
+        <div>
+            Suffix block
+        </div>
+    </ng-template>
   </div>
 
   <div>
