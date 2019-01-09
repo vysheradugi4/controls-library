@@ -13,7 +13,7 @@
       maxValue=100
       placeholder="test"
       [suffix]="suffix"
-      additionalClass="additional-class">
+      [additionalClass]="false ? 'additional-class' : ''">
     </number-range-input>
 
     <ng-template #suffix>

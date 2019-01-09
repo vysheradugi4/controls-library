@@ -1,7 +1,7 @@
 <input
     #inputControl
     type="text"
-    class="controlClass"
+    [class]="controlClass"
     [ngClass]="additionalClass"
     [value]="value"
     (input)="onChange($event.target.value)"
