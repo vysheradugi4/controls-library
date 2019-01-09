@@ -1,14 +1,18 @@
-<div>
-  <p>Currency input</p>
-  <currency-input controlClass="currency"></currency-input>
-</div>
+<form [formGroup]="form">
+  <div>
+    <p>Currency input</p>
+    <currency-input controlClass="currency"></currency-input>
+  </div>
 
-<div>
-  <p>Number range input</p>
-  <number-range-input controlClass="range"></number-range-input>
-</div>
+  <div>
+    <p>Number range input</p>
+    <number-range-input
+        controlClass="range"
+        formControlName="range"></number-range-input>
+  </div>
 
-<div>
-  <p>Positive numbers input</p>
-  <positive-numbers-input controlClass="positive"></positive-numbers-input>
-</div>
+  <div>
+    <p>Positive numbers input</p>
+    <positive-numbers-input controlClass="positive"></positive-numbers-input>
+  </div>
+</form>

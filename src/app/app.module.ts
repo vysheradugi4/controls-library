@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ControlsLibraryModule } from 'controls-library';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -11,6 +12,7 @@ import { ControlsLibraryModule } from 'controls-library';
   imports: [
     BrowserModule,
     ControlsLibraryModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [
