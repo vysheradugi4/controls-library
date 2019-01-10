@@ -24,6 +24,12 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   /**
+   * Div container css class.
+   */
+  @Input() public containerClass: string;
+
+
+  /**
    * Input form field id.
    */
   @Input() public inputId: string;

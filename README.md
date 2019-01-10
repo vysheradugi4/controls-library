@@ -37,7 +37,9 @@ tag for use number range input in your template form.
    
    
 ### Number range input form control attributes.
-
+   
+* `containerClass` – Div container css class.
+   
 * `inputId` – Input form field id.
    
 * `controlClass` – Css class name for input.
@@ -65,6 +67,7 @@ tag for use number range input in your template form.
     </ng-template>
 
     <number-range-input
+      containerClass="input-group"
       inputId="rangeInput"
       controlClass="range"
       formControlName="range"
