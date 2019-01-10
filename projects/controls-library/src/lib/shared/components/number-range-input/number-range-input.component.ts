@@ -48,7 +48,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
     const rangeArray = strRange.split('..').map(value => +value);
     this._min = rangeArray[0];
     this._max = rangeArray[1];
-  };
+  }
 
 
   /**
@@ -58,7 +58,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
     if (value) {
       this.inputControl.nativeElement.placeholder = value;
     }
-  };
+  }
 
 
   /**
