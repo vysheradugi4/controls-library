@@ -7,8 +7,8 @@ currency, percents, positive numbers.
 
 Run for installation Components Library in your project.   
    
-`npm install controls-library --save`   
-   
+`npm install silly-datatable --save`   
+      
    
 Add in import section in your module
 
@@ -20,51 +20,74 @@ Don't forget import this module:
 `import { ControlsLibraryModule } from 'controls-library';`
    
    
-## Currency input form control.
-
-Add
-
-`<currency-input></currency-input>`
-
-tag for use currency input in your template form.
-   
-   
-### Currency input form control attributes.
-
-* controlClass – Css class name for input.
-   
-
-
 ## Number range input form control.
 
+Add form tag in your template with defined form group name.
+
+`<form [formGroup]="formGroup">`
+
+or use single as single form control with `formControl` attribute.
+   
+   
 Add 
    
 `<number-range-input></number-range-input>`
 
 tag for use number range input in your template form.
    
-
+   
 ### Number range input form control attributes.
 
-* controlClass – Css class name for input.
+* `inputId` – Input form field id.
+   
+* `controlClass` – Css class name for input.
+   
+* `additionalClass` – Additional css class for input.
+   
+* `range` – String with range in  `0..100` format. Contains min and max values.
+   
+* `placeholder` – Input placeholder string.
+   
+* `prefix` – Template prefix before input form control (TemplateRef<any>).
+   
+* `suffix` – Template suffix after input form control (TemplateRef<any>).
    
    
-
-## Positive numbers input form control.
-
-Add 
-
-`<positive-numbers-input></positive-numbers-input>`
-
-tag for use positive numbers input in your template form.
-
-  
-### Positive numbers input form control attributes.
-
-* controlClass – Css class name for input.
-
    
+### Example usage template part.
 
+```
+<form [formGroup]="form">
+  <div>
+
+    <ng-template #label>
+      <label for="rangeInput">Positive number range input</label><br>
+    </ng-template>
+
+    <number-range-input
+      inputId="rangeInput"
+      controlClass="range"
+      formControlName="range"
+      placeholder="test"
+      range="0..100"
+      [prefix]="label"
+      [suffix]="error"
+      [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
+    </number-range-input>
+
+    <ng-template #error>
+      <div>
+        Required
+      </div>
+    </ng-template>
+
+  </div>
+</form>
+
+```
+   
+   
+   
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
 
 ## Development server

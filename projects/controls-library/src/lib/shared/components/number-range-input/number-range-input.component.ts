@@ -22,6 +22,13 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
   @ViewChild('inputControl') public inputControl: ElementRef;
 
+
+  /**
+   * Input form field id.
+   */
+  @Input() public inputId: string;
+
+
   /**
    * Css class name for input.
    */
@@ -35,21 +42,29 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   /**
-   * Min limit of range.
+   * Min and max values setter.
    */
-  @Input() public minValue: number;
-
-
-  /**
-   * Max limit of range.
-   */
-  @Input() public maxValue: number;
+  @Input() public set range(strRange: string) {
+    const rangeArray = strRange.split('..').map(value => +value);
+    this._min = rangeArray[0];
+    this._max = rangeArray[1];
+  };
 
 
   /**
    * Input placeholder.
    */
-  @Input() public placeholder = '';
+  @Input() set placeholder(value: string){
+    if (value) {
+      this.inputControl.nativeElement.placeholder = value;
+    }
+  };
+
+
+  /**
+   * Template prefix before input form control.
+   */
+  @Input() public prefix: TemplateRef<any>;
 
 
   /**
@@ -59,40 +74,64 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   private change: Function;
-  private lastValue: string;
+  private _lastValue: string;
+  private _min: number;
+  private _max: number;
 
 
   constructor() { }
 
 
   ngOnInit() {
+    if (isNaN(this._max) || isNaN(this._min)) {
+      throw new Error('Range required or values error');
+    }
+
+    if (this._min >= this._max) {
+      throw new Error('Wrong range');
+    }
+
     this.change = (value: string) => { };
     this.touched = () => { };
   }
 
 
   public onChange(value: string) {
-    if (isNaN(+value) || +value < this.minValue || +value > this.maxValue) {
-      this.value = this.lastValue;
+    if (value === '' || (value === '-' && this._min < 0)) {
+      this.value = value;
+      this._lastValue = this.value;
+      this.change('');
+      return;
+    }
+
+    if (isNaN(+value) || (+value > this._max && this._max > 0) || (+value < this._min && this._min < 0) || (this._max < 0 && +value > 0)) {
+      this.value = this._lastValue;
       this.inputControl.nativeElement.value = this.value;
+      this.change(+this.value);
+      return;
+    }
+
+    if (+value < this._min || (+value > this._max && this._max < 0)) {
+      this.value = value;
+      this._lastValue = this.value;
+      this.change('');
       return;
     }
 
     this.value = value;
-    this.lastValue = this.value;
-    this.change(+value);
+    this._lastValue = this.value;
+    this.change(+this.value);
   }
 
 
   writeValue(value: string): void {
-
     this.value = value;
 
-    if (isNaN(+value) || +value < this.minValue || +value > this.maxValue) {
-      this.value = '0';
+    if (isNaN(+value) || +value < this._min || +value > this._max) {
+      this.value = '';
     }
 
-    this.lastValue = this.value;
+    this._lastValue = this.value;
   }
 
 

@@ -1,12 +1,14 @@
+<ng-container *ngTemplateOutlet="prefix"></ng-container>
+
 <input
     #inputControl
     type="text"
+    [id]="inputId"
     [class]="controlClass"
     [ngClass]="additionalClass"
     [value]="value"
     (input)="onChange($event.target.value)"
     (blur)="touched()"
-    [disabled]="disabled"
-    [placeholder]="placeholder">
+    [disabled]="disabled">
 
 <ng-container *ngTemplateOutlet="suffix"></ng-container>

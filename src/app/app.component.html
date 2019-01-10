@@ -1,30 +1,26 @@
 <form [formGroup]="form">
   <div>
-    <p>Currency input</p>
-    <currency-input controlClass="currency"></currency-input>
-  </div>
 
-  <div>
-    <p>Number range input</p>
+    <ng-template #label>
+      <label for="rangeInput">Positive number range input</label><br>
+    </ng-template>
+
     <number-range-input
+      inputId="rangeInput"
       controlClass="range"
       formControlName="range"
-      minValue=0
-      maxValue=100
       placeholder="test"
-      [suffix]="suffix"
-      [additionalClass]="false ? 'additional-class' : ''">
+      range="0..100"
+      [prefix]="label"
+      [suffix]="error"
+      [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
     </number-range-input>
 
-    <ng-template #suffix>
-        <div>
-            Suffix block
-        </div>
+    <ng-template #error>
+      <div>
+        Required
+      </div>
     </ng-template>
-  </div>
 
-  <div>
-    <p>Positive numbers input</p>
-    <positive-numbers-input controlClass="positive"></positive-numbers-input>
   </div>
 </form>
