@@ -7,7 +7,7 @@
     [class]="controlClass"
     [ngClass]="additionalClass"
     [value]="value"
-    (input)="onChange($event.target.value)"
+    (input)="onChange($event)"
     (blur)="touched()"
     [disabled]="disabled">
 

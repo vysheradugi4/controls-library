@@ -54,7 +54,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
   /**
    * Input placeholder.
    */
-  @Input() set placeholder(value: string){
+  @Input() set placeholder(value: string) {
     if (value) {
       this.inputControl.nativeElement.placeholder = value;
     }
@@ -96,7 +96,8 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
   }
 
 
-  public onChange(value: string) {
+  public onChange(event: any) {
+    const value = event.target.value;
     if (value === '' || (value === '-' && this._min < 0)) {
       this.value = value;
       this._lastValue = this.value;
@@ -104,7 +105,23 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
       return;
     }
 
-    if (isNaN(+value) || (+value > this._max && this._max > 0) || (+value < this._min && this._min < 0) || (this._max < 0 && +value > 0)) {
+    if (
+      isNaN(+value) ||
+
+      // More than max when max are positive
+      (+value > this._max && this._max > 0) ||
+
+      // Less than min when min are negative
+      (+value < this._min && this._min < 0) ||
+
+      // Positive when max are negative
+      (+value > 0 && this._max < 0) ||
+
+      // Remove few characters
+      event.data === '.' ||
+      event.data === ',' ||
+      event.data === ' '
+    ) {
       this.value = this._lastValue;
       this.inputControl.nativeElement.value = this.value;
       this.change(+this.value);
@@ -125,10 +142,10 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   writeValue(value: string): void {
-    this.value = value;
+    this.value = value || '0';
 
     if (isNaN(+value) || +value < this._min || +value > this._max) {
-      this.value = '';
+      this.value = '0';
     }
 
     this._lastValue = this.value;
