@@ -1,8 +1,8 @@
 <form [formGroup]="form">
   <div>
 
-    <ng-template #label>
-      <label for="rangeInput">Positive number range input</label><br>
+    <ng-template #numberRangeLabel>
+      <label for="rangeInput">Number range input</label><br>
     </ng-template>
 
     <number-range-input
@@ -10,14 +10,38 @@
       inputId="rangeInput"
       controlClass="range"
       formControlName="range"
-      placeholder="test"
+      placeholder="range test"
       range="1..100"
-      [prefix]="label"
-      [suffix]="error"
+      [prefix]="numberRangeLabel"
+      [suffix]="numberRangeError"
       [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
     </number-range-input>
 
-    <ng-template #error>
+    <ng-template #numberRangeError>
+      <div>
+        Required
+      </div>
+    </ng-template>
+
+    <hr>
+
+    <ng-template #currencyInputLabel>
+      <label for="currencyInput">Currency input</label><br>
+    </ng-template>
+
+    <currency-input
+       containerClass="input-group"
+       inputId="currencyInput"
+       controlClass="currency-input"
+       formControlName="currency"
+       placeholder="currency test"
+       [locale]="locale"
+       [prefix]="currencyInputLabel"
+       [suffix]="currencyInputError"
+       [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
+    </currency-input>
+
+    <ng-template #currencyInputError>
       <div>
         Required
       </div>

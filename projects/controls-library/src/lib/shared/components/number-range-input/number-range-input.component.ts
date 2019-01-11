@@ -104,10 +104,10 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
   public onChange(value: string) {
     // Positive and negative.
-    if(!(this.validNumber(value))) {
+    if (!(this.validNumber(value))) {
       this.inputControl.nativeElement.value = this._lastValue;
       return;
-    };
+    }
 
     if (+value > this._max || (+value < this._min && this._min < 0)) {
       this.inputControl.nativeElement.value = this._lastValue;
@@ -121,7 +121,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
     }
 
     this.change(value === '' ? '' : +value);
-    this._lastValue = value
+    this._lastValue = value;
   }
 
 
@@ -155,6 +155,6 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
       return /^-?\d*$/.test(value);
     }
 
-    return /^\d*$/.test(value)
+    return /^\d*$/.test(value);
   }
 }

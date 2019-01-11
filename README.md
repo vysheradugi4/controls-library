@@ -46,8 +46,8 @@ tag for use number range input in your template form.
    
 * `additionalClass` – Additional css class for input.
    
-* `range` – String with range in  `0..100` format (for negative numbers needs work).
-Contains min and max values.
+* `range` – String with range in  `0..100` format (negative number ranges not
+tested). Contains min and max values.
    
 * `placeholder` – Input placeholder string.
    
@@ -89,6 +89,43 @@ Contains min and max values.
 </form>
 
 ```
+   
+   
+   
+## Currency input form control.
+
+Currency input form field depends on defined user's locale.
+   
+Add form tag in your template with defined form group name.
+
+`<form [formGroup]="formGroup">`
+
+or use single as single form control with `formControl` attribute.
+   
+   
+Add 
+   
+`<currency-input></currency-input>`
+
+tag for use currency input in your template form.
+   
+   
+### Currency input form control attributes.
+   
+* `containerClass` – Div container css class.
+   
+* `controlClass` – Css class name for input.
+   
+* `inputId` – Input form field id.
+   
+* `placeholder` – Input placeholder string.
+   
+* `locale` – Current user's locale.
+   
+* `prefix` – Template prefix before input form control (TemplateRef<any>).
+   
+* `suffix` – Template suffix after input form control (TemplateRef<any>).
+   
    
    
    

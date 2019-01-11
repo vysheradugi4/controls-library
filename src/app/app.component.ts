@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -11,19 +11,29 @@ export class AppComponent implements OnInit {
   public form: FormGroup;
 
 
-  constructor() { }
+  constructor(
+    @Inject(LOCALE_ID) public locale: string
+  ) { }
 
 
   ngOnInit() {
     this.form = new FormGroup({
       range: new FormControl('', [
         Validators.required
+      ]),
+      currency: new FormControl('', [
+        Validators.required
       ])
     });
 
     this.form.get('range').valueChanges
       .subscribe((value) => {
-        console.log('value = ', value);
+        console.log('range value = ', value);
+      });
+
+    this.form.get('currency').valueChanges
+      .subscribe((value) => {
+        console.log('currency value = ', value);
       });
   }
 }
