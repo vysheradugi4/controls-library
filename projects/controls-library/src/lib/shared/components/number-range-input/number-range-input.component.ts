@@ -45,7 +45,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
    * Min and max values setter.
    */
   @Input() public set range(strRange: string) {
-    const rangeArray = strRange.split('..').map(value => +value);
+    const rangeArray = strRange.split('..').map(str => +str);
     this._min = rangeArray[0];
     this._max = rangeArray[1];
   };
@@ -54,9 +54,9 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
   /**
    * Input placeholder.
    */
-  @Input() set placeholder(value: string) {
-    if (value) {
-      this.inputControl.nativeElement.placeholder = value;
+  @Input() set placeholder(str: string) {
+    if (str) {
+      this.inputControl.nativeElement.placeholder = str;
     }
   };
 
@@ -96,57 +96,31 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
   }
 
 
-  public onChange(event: any) {
-    const value = event.target.value;
-    if (value === '' || (value === '-' && this._min < 0)) {
-      this.value = value;
-      this._lastValue = this.value;
-      this.change('');
+  public onChange(value: string) {
+    // Positive and negative.
+    if(!(this.validNumber(value))) {
+      this.inputControl.nativeElement.value = this._lastValue;
+      return;
+    };
+
+    if (+value > this._max || (+value < this._min && this._min < 0)) {
+      this.inputControl.nativeElement.value = this._lastValue;
       return;
     }
 
-    if (
-      isNaN(+value) ||
-
-      // More than max when max are positive
-      (+value > this._max && this._max > 0) ||
-
-      // Less than min when min are negative
-      (+value < this._min && this._min < 0) ||
-
-      // Positive when max are negative
-      (+value > 0 && this._max < 0) ||
-
-      // Remove few characters
-      event.data === '.' ||
-      event.data === ',' ||
-      event.data === ' '
-    ) {
-      this.value = this._lastValue;
-      this.inputControl.nativeElement.value = this.value;
-      this.change(+this.value);
+    if (+value < this._min || isNaN(+value)) {
+      this._lastValue = '';
+      this.change(this._lastValue);
       return;
     }
 
-    if (+value < this._min || (+value > this._max && this._max < 0)) {
-      this.value = value;
-      this._lastValue = this.value;
-      this.change('');
-      return;
-    }
-
-    this.value = value;
-    this._lastValue = this.value;
-    this.change(+this.value);
+    this.change(value === '' ? '' : +value);
+    this._lastValue = value
   }
 
 
   writeValue(value: string): void {
-    this.value = value || '0';
-
-    if (isNaN(+value) || +value < this._min || +value > this._max) {
-      this.value = '0';
-    }
+    this.value = this.validNumber(value) ? value : '';
 
     this._lastValue = this.value;
   }
@@ -164,5 +138,17 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  /**
+   * Depends on min (positive or negative)
+   */
+  private validNumber(value: string): boolean {
+    // Include negative
+    if (this._min < 0) {
+      return /^-?\d*$/.test(value);
+    }
+
+    return /^\d*$/.test(value)
   }
 }
