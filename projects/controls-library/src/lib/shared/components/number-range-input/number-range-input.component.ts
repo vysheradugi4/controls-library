@@ -24,6 +24,12 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
 
   /**
+   * Div container css class.
+   */
+  @Input() public containerClass: string;
+
+
+  /**
    * Input form field id.
    */
   @Input() public inputId: string;
@@ -48,7 +54,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
     const rangeArray = strRange.split('..').map(str => +str);
     this._min = rangeArray[0];
     this._max = rangeArray[1];
-  };
+  }
 
 
   /**
@@ -58,7 +64,7 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
     if (str) {
       this.inputControl.nativeElement.placeholder = str;
     }
-  };
+  }
 
 
   /**

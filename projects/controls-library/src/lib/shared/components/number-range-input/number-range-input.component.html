@@ -1,4 +1,5 @@
-<ng-container *ngTemplateOutlet="prefix"></ng-container>
+<div [ngClass]="containerClass">
+    <ng-container *ngTemplateOutlet="prefix"></ng-container>
 
 <input
     #inputControl
@@ -11,4 +12,5 @@
     (blur)="touched()"
     [disabled]="disabled">
 
-<ng-container *ngTemplateOutlet="suffix"></ng-container>
+    <ng-container *ngTemplateOutlet="suffix"></ng-container>
+</div>
