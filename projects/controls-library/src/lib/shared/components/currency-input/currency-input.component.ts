@@ -75,6 +75,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   private _lastValue: string;
+  private _localeDecimalSeparator: string;
   private change: Function;
 
 
@@ -86,6 +87,11 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {
     this.change = (value: string) => { };
     this.touched = () => { };
+
+    this._localeDecimalSeparator = (1.1)
+      .toLocaleString(this.locale).substring(1, 2);
+
+    console.log(this._localeDecimalSeparator);
   }
 
 
@@ -94,6 +100,22 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
       this.inputControl.nativeElement.value = this._lastValue;
       return;
     }
+
+    if (isNaN(this.localeDecimalToNumber(value))) {
+
+      if (value === '-') {
+        this._lastValue = '-';
+        return;
+      }
+
+      this._lastValue = '';
+
+      this.change(this._lastValue);
+      return;
+    }
+
+    this.change(value === '' ? '' : this.localeDecimalToNumber(value));
+    this._lastValue = value;
   }
 
 
@@ -121,5 +143,19 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
   private validDecimal(value: string) {
     return /^-?\d*[.,]?\d{0,2}$/.test(value);
+  }
+
+
+  /**
+   * Convert string with locale number (comma separator) to number.
+   * @param str String for convert.
+   * @returns Number.
+   */
+  public localeDecimalToNumber(str: string): number {
+    if (!str) {
+      return 0;
+    }
+
+    return parseFloat(str.replace(',', '.'));
   }
 }

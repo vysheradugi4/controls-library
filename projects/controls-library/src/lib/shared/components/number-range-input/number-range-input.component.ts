@@ -116,6 +116,12 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
     if (+value < this._min || isNaN(+value)) {
       this._lastValue = '';
+
+      if (value === '-') {
+        this._lastValue = '-';
+        return;
+      }
+
       this.change(this._lastValue);
       return;
     }
