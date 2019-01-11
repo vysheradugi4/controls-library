@@ -46,7 +46,8 @@ tag for use number range input in your template form.
    
 * `additionalClass` – Additional css class for input.
    
-* `range` – String with range in  `0..100` format. Contains min and max values.
+* `range` – String with range in  `0..100` format (for negative numbers needs work).
+Contains min and max values.
    
 * `placeholder` – Input placeholder string.
    

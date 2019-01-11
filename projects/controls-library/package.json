@@ -1,6 +1,6 @@
 {
   "name": "controls-library",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "For angular 6+ versions apps. Custom controls for input currency, input with range numbers, percents, positive numbers etc.",
   "keywords": [
     "angular",
