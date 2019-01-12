@@ -9,10 +9,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class AppComponent implements OnInit {
 
   public form: FormGroup;
-  public locale = 'de-DE';
 
 
   constructor(
+    @Inject(LOCALE_ID) public locale: string
   ) { }
 
 

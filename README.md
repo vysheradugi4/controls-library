@@ -120,7 +120,7 @@ tag for use currency input in your template form.
    
 * `placeholder` – Input placeholder string.
    
-* `locale` – Current user's locale.
+* `locale` – Current user's locale (Needs for decimal separator (. dot or , comma)).
    
 * `prefix` – Template prefix before input form control (TemplateRef<any>).
    
