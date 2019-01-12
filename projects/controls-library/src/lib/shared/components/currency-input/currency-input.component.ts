@@ -174,6 +174,10 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   private stringWithNumberToLocaleDecimalString(str: string): string {
+    if (!str) {
+      return str;
+    }
+
     return str.replace('.', this._localeDecimalSeparator);
   }
 
