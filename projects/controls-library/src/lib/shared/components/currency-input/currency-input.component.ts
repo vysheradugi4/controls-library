@@ -90,21 +90,25 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
     this._localeDecimalSeparator = (1.1)
       .toLocaleString(this.locale).substring(1, 2);
-
-    console.log(this._localeDecimalSeparator);
   }
 
 
   public onChange(value: string) {
+
     if (!(this.validDecimal(value))) {
+      const cursorPosition = this.inputControl.nativeElement.selectionStart - 1;
+
       this.inputControl.nativeElement.value = this._lastValue;
+
+      this.inputControl.nativeElement.selectionStart = cursorPosition;
+      this.inputControl.nativeElement.selectionEnd = cursorPosition;
       return;
     }
 
     if (isNaN(this.localeDecimalToNumber(value))) {
 
-      if (value === '-') {
-        this._lastValue = '-';
+      if (value === '-' || value === this._localeDecimalSeparator) {
+        this._lastValue = value;
         return;
       }
 
@@ -142,7 +146,8 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   private validDecimal(value: string) {
-    return /^-?\d*[.,]?\d{0,2}$/.test(value);
+    const re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+    return re.test(value);
   }
 
 

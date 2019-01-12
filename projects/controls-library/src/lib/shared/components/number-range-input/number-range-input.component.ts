@@ -104,13 +104,17 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
   public onChange(value: string) {
     // Positive and negative.
-    if (!(this.validNumber(value))) {
-      this.inputControl.nativeElement.value = this._lastValue;
-      return;
-    }
+    if (
+      !(this.validNumber(value)) ||
+      +value > this._max ||
+      (+value < this._min && this._min < 0)
+    ) {
+      const cursorPosition = this.inputControl.nativeElement.selectionStart - 1;
 
-    if (+value > this._max || (+value < this._min && this._min < 0)) {
       this.inputControl.nativeElement.value = this._lastValue;
+
+      this.inputControl.nativeElement.selectionStart = cursorPosition;
+      this.inputControl.nativeElement.selectionEnd = cursorPosition;
       return;
     }
 
