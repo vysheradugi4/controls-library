@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, TemplateRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, TemplateRef, forwardRef, Inject, LOCALE_ID } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 @Component({
@@ -49,11 +49,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
   /**
    * Input placeholder.
    */
-  @Input() set placeholder(str: string) {
-    if (str) {
-      this.inputControl.nativeElement.placeholder = str;
-    }
-  }
+  @Input() public placeholder: string;
 
 
   /**
@@ -80,7 +76,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   constructor(
-
+    @Inject(LOCALE_ID) private _appLocale: string
   ) { }
 
 
@@ -90,6 +86,18 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
     this._localeDecimalSeparator = (1.1)
       .toLocaleString(this.locale).substring(1, 2);
+
+    this.locale = this.locale || this._appLocale;
+
+    /**
+     * Setup placeholder. When 0 (nil) will be shown with two decimals
+     * and locale decimal separator.
+     */
+    if (this.placeholder === '0') {
+      this.placeholder = `0${this._localeDecimalSeparator}00`;
+    }
+
+    this.inputControl.nativeElement.placeholder = this.placeholder || '';
   }
 
 

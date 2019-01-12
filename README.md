@@ -116,9 +116,11 @@ tag for use currency input in your template form.
    
 * `inputId` – Input form field id.
    
-* `placeholder` – Input placeholder string.
+* `placeholder` – Input placeholder string, if set 0 (nil) placeholder will be 
+shown with two decimals and decimal separator for current locale.
    
-* `locale` – Current user's locale (Needs for decimal separator (. dot or , comma)).
+* `locale` – Current user's locale (Needs for decimal separator 
+(. dot or , comma)). If not defined, will be used app locale.
    
 * `prefix` – Template prefix before input form control (TemplateRef<any>).
    
