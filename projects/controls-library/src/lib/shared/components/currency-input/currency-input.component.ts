@@ -131,8 +131,8 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
   }
 
 
-  writeValue(value: string): void {
-    this.value = isNaN(+value) ? '' : this.stringWithNumberToLocaleDecimalString(value);
+  writeValue(value: number): void {
+    this.value = value.toLocaleString(this.locale);
 
     this._lastValue = this.value;
   }
@@ -171,14 +171,4 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
     return parseFloat(str.replace(',', '.'));
   }
-
-
-  private stringWithNumberToLocaleDecimalString(str: string): string {
-    if (!str) {
-      return str;
-    }
-
-    return str.replace('.', this._localeDecimalSeparator);
-  }
-
 }

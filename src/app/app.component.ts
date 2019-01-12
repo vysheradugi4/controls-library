@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
       range: new FormControl('', [
         Validators.required
       ]),
-      currency: new FormControl('', [
+      currency: new FormControl(10.25, [
         Validators.required
       ])
     });
