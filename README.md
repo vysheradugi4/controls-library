@@ -61,31 +61,29 @@ tested). Contains min and max values.
 
 ```
 <form [formGroup]="form">
-  <div>
 
-    <ng-template #label>
-      <label for="rangeInput">Positive number range input</label><br>
-    </ng-template>
+  <ng-template #numberRangeLabel>
+    <label for="rangeInput">Number range input</label><br>
+  </ng-template>
 
-    <number-range-input
-      containerClass="input-group"
-      inputId="rangeInput"
-      controlClass="range"
-      formControlName="range"
-      placeholder="test"
-      range="0..100"
-      [prefix]="label"
-      [suffix]="error"
-      [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
-    </number-range-input>
+  <number-range-input
+    containerClass="input-group"
+    inputId="rangeInput"
+    controlClass="range"
+    formControlName="range"
+    placeholder="range test"
+    range="1..100"
+    [prefix]="numberRangeLabel"
+    [suffix]="numberRangeError"
+    [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
+  </number-range-input>
 
-    <ng-template #error>
-      <div>
-        Required
-      </div>
-    </ng-template>
+  <ng-template #numberRangeError>
+    <div>
+      Required
+    </div>
+  </ng-template>
 
-  </div>
 </form>
 
 ```
@@ -127,6 +125,35 @@ tag for use currency input in your template form.
 * `suffix` – Template suffix after input form control (TemplateRef<any>).
    
    
+### Example usage template part
+   
+```
+<form [formGroup]="form">
+
+  <ng-template #currencyInputLabel>
+    <label for="currencyInput">Currency input</label><br>
+  </ng-template>
+
+  <currency-input
+      containerClass="input-group"
+      inputId="currencyInput"
+      controlClass="currency-input"
+      formControlName="currency"
+      placeholder="currency test"
+      [locale]="locale"
+      [prefix]="currencyInputLabel"
+      [suffix]="currencyInputError"
+      [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
+  </currency-input>
+
+  <ng-template #currencyInputError>
+    <div>
+      Required
+    </div>
+  </ng-template>
+
+</form>
+```
    
    
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
