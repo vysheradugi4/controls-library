@@ -132,7 +132,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   writeValue(value: string): void {
-    this.value = isNaN(+value) ? value : '';
+    this.value = isNaN(+value) ? '' : value;
 
     this._lastValue = this.value;
   }
