@@ -132,7 +132,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   writeValue(value: number): void {
-    this.value = value.toLocaleString(this.locale);
+    this.value = value || value === 0 ? value.toLocaleString(this.locale) : '';
 
     this._lastValue = this.value;
   }

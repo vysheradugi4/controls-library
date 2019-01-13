@@ -9,6 +9,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class AppComponent implements OnInit {
 
   public form: FormGroup;
+  public currency: number;
 
 
   constructor(
@@ -21,7 +22,7 @@ export class AppComponent implements OnInit {
       range: new FormControl('', [
         Validators.required
       ]),
-      currency: new FormControl(10.25, [
+      currency: new FormControl(this.currency, [
         Validators.required
       ])
     });
