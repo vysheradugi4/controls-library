@@ -22,7 +22,12 @@ export class AppComponent implements OnInit {
       range: new FormControl('', [
         Validators.required
       ]),
+
       currency: new FormControl(this.currency, [
+        Validators.required
+      ]),
+
+      positiveNumbers: new FormControl('', [
         Validators.required
       ])
     });
@@ -35,6 +40,11 @@ export class AppComponent implements OnInit {
     this.form.get('currency').valueChanges
       .subscribe((value) => {
         console.log('currency value = ', value);
+      });
+
+    this.form.get('positiveNumbers').valueChanges
+      .subscribe((value) => {
+        console.log('positive numbers value = ', value);
       });
   }
 }

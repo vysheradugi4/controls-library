@@ -38,10 +38,33 @@
        [locale]="locale"
        [prefix]="currencyInputLabel"
        [suffix]="currencyInputError"
-       [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
+       [additionalClass]="form.get('currency').hasError('required') ? 'additional-class' : ''">
     </currency-input>
 
     <ng-template #currencyInputError>
+      <div>
+        Required
+      </div>
+    </ng-template>
+
+    <hr>
+
+    <ng-template #positiveNumbersInputLabel>
+      <label for="positiveNumbers">Positive numbers input</label><br>
+    </ng-template>
+
+    <positive-numbers-input
+       containerClass="input-group"
+       inputId="positiveNumbersInput"
+       controlClass="positive-numbers-input"
+       formControlName="positiveNumbers"
+       placeholder="0"
+       [prefix]="positiveNumbersInputLabel"
+       [suffix]="positiveNumbersInputError"
+       [additionalClass]="form.get('positiveNumbers').hasError('required') ? 'additional-class' : ''">
+    </positive-numbers-input>
+
+    <ng-template #positiveNumbersInputError>
       <div>
         Required
       </div>
