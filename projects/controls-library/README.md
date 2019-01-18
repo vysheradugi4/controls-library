@@ -126,6 +126,8 @@ shown with two decimals and decimal separator for current locale.
    
 * `suffix` – Template suffix after input form control (TemplateRef<any>).
    
+* `additionalClass` – Additional css class for input.
+   
    
 ### Example usage template part
    
@@ -156,6 +158,71 @@ shown with two decimals and decimal separator for current locale.
 
 </form>
 ```
+   
+   
+## Positive numbers input form control.
+
+Add form tag in your template with defined form group name.
+
+`<form [formGroup]="formGroup">`
+
+or use single as single form control with `formControl` attribute.
+   
+   
+Add 
+   
+`<positive-numbers-input></positive-numbers-input>`
+
+tag for use positive numbers input in your template form.
+   
+   
+### Positive numbers input form control attributes.
+   
+* `containerClass` – Div container css class.
+   
+* `controlClass` – Css class name for input.
+   
+* `inputId` – Input form field id.
+   
+* `placeholder` – Input placeholder string, if set 0 (nil) placeholder will be 
+shown with two decimals and decimal separator for current locale.
+   
+* `prefix` – Template prefix before input form control (TemplateRef<any>).
+   
+* `suffix` – Template suffix after input form control (TemplateRef<any>).
+   
+* `additionalClass` – Additional css class for input.
+   
+   
+### Example usage template part
+   
+```
+<form [formGroup]="form">
+
+  <ng-template #positiveNumbersInputLabel>
+    <label for="positiveNumbers">Positive numbers input</label><br>
+  </ng-template>
+
+  <positive-numbers-input
+      containerClass="input-group"
+      inputId="positiveNumbersInput"
+      controlClass="positive-numbers-input"
+      formControlName="positiveNumbers"
+      placeholder="0"
+      [prefix]="positiveNumbersInputLabel"
+      [suffix]="positiveNumbersInputError"
+      [additionalClass]="form.get('positiveNumbers').hasError('required') ? 'additional-class' : ''">
+  </positive-numbers-input>
+
+  <ng-template #positiveNumbersInputError>
+    <div>
+      Required
+    </div>
+  </ng-template>
+
+</form>
+```
+
    
    
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
