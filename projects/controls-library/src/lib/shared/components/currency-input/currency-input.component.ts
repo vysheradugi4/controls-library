@@ -70,6 +70,12 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
   @Input() public locale: string;
 
 
+  /**
+   * Only positive or positive and negative numbers.
+   */
+  @Input() public positive = false;
+
+
   private _lastValue: string;
   private _localeDecimalSeparator: string;
   private change: Function;
@@ -154,7 +160,14 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   private validDecimal(value: string) {
-    const re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+    let re: RegExp;
+
+    if (this.positive) {
+      re = new RegExp('^\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+    } else {
+      re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+    }
+
     return re.test(value);
   }
 

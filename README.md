@@ -122,6 +122,9 @@ shown with two decimals and decimal separator for current locale.
 * `locale` – Current user's locale (Needs for decimal separator 
 (. dot or , comma)). If not defined, will be used app locale.
    
+* `positive` – True if needs only positive or false if needs positive and negative
+numbers (boolean).
+   
 * `prefix` – Template prefix before input form control (TemplateRef<any>).
    
 * `suffix` – Template suffix after input form control (TemplateRef<any>).
@@ -145,6 +148,7 @@ shown with two decimals and decimal separator for current locale.
       formControlName="currency"
       placeholder="currency test"
       [locale]="locale"
+      positive="true"
       [prefix]="currencyInputLabel"
       [suffix]="currencyInputError"
       [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">
