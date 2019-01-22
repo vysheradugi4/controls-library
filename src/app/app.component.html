@@ -35,8 +35,8 @@
        controlClass="currency-input"
        formControlName="currency"
        placeholder="0"
-       positive="true"
-       [locale]="locale"
+       [positive]="false"
+       [locale]="'locale'"
        [prefix]="currencyInputLabel"
        [suffix]="currencyInputError"
        [additionalClass]="form.get('currency').hasError('required') ? 'additional-class' : ''">

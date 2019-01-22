@@ -7,10 +7,9 @@
         [id]="inputId"
         [class]="controlClass"
         [ngClass]="additionalClass"
-        [value]="value"
-        (input)="onChange($event.target.value)"
-        (blur)="touched()"
-        [disabled]="disabled">
+        [placeholder]="placeholder || ''"
+        [formControl]="formControl"
+        (blur)="onTouched()">
 
     <ng-container *ngTemplateOutlet="suffix"></ng-container>
 </div>

@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, TemplateRef, forwardRef, Inject, LOCALE_ID } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { Component, OnInit, Input, TemplateRef, forwardRef, Inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,9 +21,10 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
   @ViewChild('inputControl') public inputControl: ElementRef;
 
-  public value: string;
+  public formControl: FormControl;
   public disabled: boolean;
   public touched: Function;
+  public value: string;
 
   /**
    * Css class name for div container.
@@ -78,6 +82,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
   private _lastValue: string;
   private _localeDecimalSeparator: string;
+  private _unsubscribe: Subject<boolean> = new Subject<boolean>();
   private change: Function;
 
 
@@ -103,7 +108,14 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
       this.placeholder = `0${this._localeDecimalSeparator}00`;
     }
 
-    this.inputControl.nativeElement.placeholder = this.placeholder || '';
+    this.formControl = new FormControl();
+
+    this.formControl.valueChanges.pipe(
+      takeUntil(this._unsubscribe)
+    )
+      .subscribe((value: string) => {
+        this.onChange(value);
+      });
   }
 
 
@@ -112,7 +124,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
     if (!(this.validDecimal(value))) {
       const cursorPosition = this.inputControl.nativeElement.selectionStart - 1;
 
-      this.inputControl.nativeElement.value = this._lastValue;
+      this.formControl.setValue(this._lastValue);
 
       this.inputControl.nativeElement.selectionStart = cursorPosition;
       this.inputControl.nativeElement.selectionEnd = cursorPosition;
@@ -133,14 +145,24 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
     }
 
     this.change(value === '' ? '' : this.localeDecimalToNumber(value));
+    this.value = value;
     this._lastValue = value;
   }
 
 
-  writeValue(value: number): void {
-    this.value = value || value === 0 ? value.toLocaleString(this.locale) : '';
+  public onTouched() {
+    const valueWithDecimals = this.addTwoDecimal(this.value);
+    this.formControl.setValue(valueWithDecimals);
+    this.touched();
+  }
 
-    this._lastValue = this.value;
+
+  writeValue(value: number): void {
+    const newValue = value || value === 0 ? value.toLocaleString(this.locale) : '';
+
+    this.formControl.setValue(newValue);
+
+    this._lastValue = newValue;
   }
 
 
@@ -155,7 +177,12 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+
+    this.formControl.enable();
   }
 
 
@@ -183,5 +210,24 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
     }
 
     return parseFloat(str.replace(',', '.'));
+  }
+
+
+  /**
+   * For add two decimals to input value.
+   * @param num String with number in locale version.
+   * @returns String with number in locale version (locale decimal separator,
+   * comma or dot).
+   */
+  private addTwoDecimal(num: string): string {
+    const numberValue = this.localeDecimalToNumber(num);
+
+    const res = num.split(this._localeDecimalSeparator);
+
+    if (res.length === 1 || res[1].length < 2) {
+      return numberValue.toLocaleString(this.locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    return num;
   }
 }
