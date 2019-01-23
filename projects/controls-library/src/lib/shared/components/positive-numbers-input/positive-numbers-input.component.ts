@@ -1,5 +1,8 @@
 import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { ValueState } from '../../models/value-state.model';
+
+
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -16,7 +19,8 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 })
 export class PositiveNumbersInputComponent implements OnInit, ControlValueAccessor {
 
-  public value: string;
+  public state: ValueState = new ValueState();
+
   public disabled: boolean;
   public touched: Function;
 
@@ -69,15 +73,20 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
   @Input() public suffix: TemplateRef<any>;
 
 
+  /**
+   * Allow leading nil.
+   */
+  @Input() public leadingNil = true;
+
+
   private change: Function;
-  private _lastValue: string;
 
 
   constructor() { }
 
 
   ngOnInit() {
-    this.change = (value: string) => { };
+    this.change = (value: string) => value;
     this.touched = () => { };
   }
 
