@@ -24,7 +24,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
   public formControl: FormControl;
   public disabled: boolean;
   public touched: Function;
-  public value: string;
+  public focus = false;
 
   /**
    * Css class name for div container.
@@ -84,6 +84,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
   private _localeDecimalSeparator: string;
   private _unsubscribe: Subject<boolean> = new Subject<boolean>();
   private change: Function;
+  private _value: string;
 
 
   constructor(
@@ -105,7 +106,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
      * and locale decimal separator.
      */
     if (this.placeholder === '0') {
-      this.placeholder = `0${this._localeDecimalSeparator}00`;
+      this.placeholder = this.addCurrencyFormatting('0');
     }
 
     this.formControl = new FormControl();
@@ -120,6 +121,9 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   public onChange(value: string) {
+    if (!this.focus) {
+      return;
+    }
 
     if (!(this.validDecimal(value))) {
       const cursorPosition = this.inputControl.nativeElement.selectionStart - 1;
@@ -144,15 +148,16 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
       return;
     }
 
-    this.change(value === '' ? '' : this.localeDecimalToNumber(value));
-    this.value = value;
+    this.change(value === '' ? 0 : this.localeDecimalToNumber(value));  
+    this._value = value;
     this._lastValue = value;
   }
 
 
   public onTouched() {
-    const valueWithDecimals = this.addTwoDecimal(this.value);
-    this.formControl.setValue(valueWithDecimals);
+    const formattedValue = this.addCurrencyFormatting(this._value);
+    this.focus = false;
+    this.formControl.setValue(formattedValue);
     this.touched();
   }
 
@@ -209,25 +214,18 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
       return 0;
     }
 
-    return parseFloat(str.replace(',', '.'));
+    return parseFloat(str.replace(this._localeDecimalSeparator, '.'));
   }
 
 
   /**
-   * For add two decimals to input value.
+   * For add two decimals to input value, thousands separators.
    * @param num String with number in locale version.
    * @returns String with number in locale version (locale decimal separator,
    * comma or dot).
    */
-  private addTwoDecimal(num: string): string {
+  private addCurrencyFormatting(num: string): string {
     const numberValue = this.localeDecimalToNumber(num);
-
-    const res = num.split(this._localeDecimalSeparator);
-
-    if (res.length === 1 || res[1].length < 2) {
-      return numberValue.toLocaleString(this.locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    return num;
+    return numberValue.toLocaleString(this.locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 }

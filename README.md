@@ -148,7 +148,7 @@ numbers (boolean).
       formControlName="currency"
       placeholder="currency test"
       [locale]="locale"
-      positive="true"
+      [positive]="true"
       [prefix]="currencyInputLabel"
       [suffix]="currencyInputError"
       [additionalClass]="form.get('range').hasError('required') ? 'additional-class' : ''">

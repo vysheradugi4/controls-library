@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
         Validators.required
       ]),
 
-      currency: new FormControl(this.currency, [
+      currency: new FormControl('', [
         Validators.required
       ]),
 

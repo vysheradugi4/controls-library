@@ -9,7 +9,8 @@
         [ngClass]="additionalClass"
         [placeholder]="placeholder || ''"
         [formControl]="formControl"
-        (blur)="onTouched()">
+        (blur)="onTouched()"
+        (focus)="focus=true">
 
     <ng-container *ngTemplateOutlet="suffix"></ng-container>
 </div>
