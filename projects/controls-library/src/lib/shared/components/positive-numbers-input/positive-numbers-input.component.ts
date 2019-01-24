@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef, TemplateRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef, TemplateRef, OnDestroy } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -20,7 +20,7 @@ import { ValidPositiveNumber, NaNToNil, LeadingNil, EmptyStringToNil, MultiNilTo
     },
   ],
 })
-export class PositiveNumbersInputComponent implements OnInit, ControlValueAccessor {
+export class PositiveNumbersInputComponent implements OnInit, ControlValueAccessor, OnDestroy {
 
   public state: ValueState = new ValueState();
   public disabled: boolean;
@@ -147,6 +147,12 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+
+  ngOnDestroy() {
+    this._unsubscribe.next(true);
+    this._unsubscribe.unsubscribe();
   }
 
 
