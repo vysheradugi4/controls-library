@@ -1,11 +1,13 @@
 export class ValueState {
 
+  public changeCursorPosition = 0;
+
   private _valueString = '';
   private _valueNumber = 0;
   private _lastValueString = '';
   private _lastValueNumber = 0;
 
-  constructor() {  }
+  constructor() { }
 
 
   public dirtyStringLoad(valueString: string) {

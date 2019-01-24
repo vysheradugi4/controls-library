@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import { ValueState } from '../../models/value-state.model';
-import { ValidPositiveNumber, NaNToNil, LeadingNil } from './../../helpers/chains.helper';
+import { ValidPositiveNumber, NaNToNil, LeadingNil, EmptyStringToNil, MultiNilToOne } from './../../helpers/chains.helper';
 
 
 @Component({
@@ -100,7 +100,7 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
     )
       .subscribe((value: string) => {
         this.onChange(value);
-      })
+      });
   }
 
 
@@ -108,21 +108,23 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
 
     this.state.dirtyStringLoad(valueString);
 
-    console.log('ffffffffff', JSON.stringify(this.state));
-
     // Chains
-    const check1 = new ValidPositiveNumber();
-    const check2 = new NaNToNil();
-    const check3 = new LeadingNil(this.allowLeadingNil);
+    const check1 = new EmptyStringToNil();
+    const check2 = new ValidPositiveNumber();
+    const check3 = new NaNToNil();
+    const check4 = new MultiNilToOne(this.allowLeadingNil);
+    const check5 = new LeadingNil(this.allowLeadingNil);
 
     check1.successor = check2;
     check2.successor = check3;
+    check3.successor = check4;
+    check4.successor = check5;
 
     this.state = check1.handleState(this.state);
     this.state = check2.handleState(this.state);
     this.state = check3.handleState(this.state);
-
-    console.log('zzzzzzzzzz', JSON.stringify(this.state));
+    this.state = check4.handleState(this.state);
+    this.state = check5.handleState(this.state);
 
     this.publishState(this.state);
   }
@@ -150,8 +152,15 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
 
   private publishState(state: ValueState) {
 
+    const cursorPosition = this.inputControl.nativeElement.selectionStart + state.changeCursorPosition;
+
     // Publish to input.
     this.formControl.setValue(state.valueString, { emitEvent: false });
+
+    this.inputControl.nativeElement.selectionStart = cursorPosition;
+    this.inputControl.nativeElement.selectionEnd = cursorPosition;
+
+    this.state.changeCursorPosition = 0;
 
     // Publish to system.
     this.change(state.valueNumber);
