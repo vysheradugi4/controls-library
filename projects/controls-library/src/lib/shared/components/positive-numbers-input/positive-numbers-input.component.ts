@@ -131,7 +131,7 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
 
 
   writeValue(value: number): void {
-    this.onChange(value.toString());
+    this.onChange(value ? value.toString() : '');
   }
 
 
