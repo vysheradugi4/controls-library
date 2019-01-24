@@ -1,32 +1,65 @@
 import { ValueState } from '../models/value-state.model';
 
 
-interface StatePreparer {
-  successor: StatePreparer;
-  handleNumber(value: number): ValueState;
-  handleString(value: number): ValueState;
-  addSuccessor(successor: StatePreparer): void;
+class StatePreparer {
+  private _successor: StatePreparer;
+
+  public set successor(successor: StatePreparer) {
+    this._successor = successor;
+  }
+
+  public get successor() {
+    return this._successor;
+  }
+
+  public handleState(state: ValueState): void { };
 }
 
 
-class PositiveNumber implements StatePreparer {
+export class ValidPositiveNumber extends StatePreparer {
 
-  successor: StatePreparer;
+  public handleState(state: ValueState): ValueState {
+
+    if (/^\d*$/.test(state.valueString)) {
+      state.valueNumber = parseFloat(state.valueString);
+      return state;
+    }
+
+    state.valueNumber = state.lastValueNumber || 0;
+    state.valueString = state.lastValueString || '0';
+    return state;
+  }
+}
 
 
-  handleNumber(value: number): ValueState {
-    throw new Error("Method not implemented.");
+export class NaNToNil extends StatePreparer {
+
+  public handleState(state: ValueState) {
+
+    if (isNaN(state.valueNumber)) {
+      state.valueNumber = state.lastValueNumber || 0;
+      state.valueString = state.lastValueString || '0';
+    }
+
+    return state;
+  }
+}
+
+
+export class LeadingNil extends StatePreparer {
+
+  constructor(
+    private _allowLeadingNil: boolean = true
+  ) {
+    super()
   }
 
+  public handleState(state: ValueState) {
 
-  handleString(value: number): ValueState {
-    throw new Error("Method not implemented.");
+    if (!this._allowLeadingNil) {
+      state.valueString = state.valueString.replace(/^0+/, '');
+    }
+
+    return state;
   }
-
-
-  addSuccessor(successor: StatePreparer): void {
-    throw new Error("Method not implemented.");
-  }
-
-
 }

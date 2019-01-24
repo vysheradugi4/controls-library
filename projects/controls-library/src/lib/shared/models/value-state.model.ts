@@ -2,17 +2,26 @@ export class ValueState {
 
   private _valueString = '';
   private _valueNumber = 0;
+  private _lastValueString = '';
+  private _lastValueNumber = 0;
 
-  constructor() { }
+  constructor() {  }
+
+
+  public dirtyStringLoad(valueString: string) {
+    this._valueString = valueString;
+  }
 
 
   public set valueString(value: string) {
     this._valueString = value;
+    this._lastValueString = value;
   }
 
 
   public set valueNumber(value: number) {
     this._valueNumber = value;
+    this._lastValueNumber = value;
   }
 
 
@@ -23,5 +32,15 @@ export class ValueState {
 
   public get valueNumber() {
     return this._valueNumber;
+  }
+
+
+  public get lastValueString() {
+    return this._lastValueString;
+  }
+
+
+  public get lastValueNumber() {
+    return this._lastValueNumber;
   }
 }
