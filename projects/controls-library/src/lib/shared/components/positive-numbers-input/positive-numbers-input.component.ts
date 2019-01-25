@@ -146,7 +146,12 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
 
 
   setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+
+    this.formControl.enable();
   }
 
 
