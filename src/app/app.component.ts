@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
         Validators.required
       ]),
 
-      positiveNumbers: new FormControl(12345)
+      positiveNumbers: new FormControl()
     });
 
     this.form.get('range').valueChanges

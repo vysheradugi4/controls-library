@@ -37,6 +37,9 @@ export class ValidPositiveNumber extends StatePreparer {
 
     if (/^\d*$/.test(state.valueString)) {
       state.valueNumber = parseFloat(state.valueString);
+
+      // For init lastValueString.
+      state.valueString = state.valueString;
       return state;
     }
 
@@ -92,8 +95,9 @@ export class LeadingNil extends StatePreparer {
 
   public handleState(state: ValueState) {
 
-    if (!this._allowLeadingNil && state.valueString !== '0') {
+    if (!this._allowLeadingNil && /^0+\d+/.test(state.valueString)) {
       state.valueString = state.valueString.replace(/^0+/, '');
+      state.changeCursorPosition = -1;
     }
 
     return state;
