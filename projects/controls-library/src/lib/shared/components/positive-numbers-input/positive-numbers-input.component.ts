@@ -1,5 +1,11 @@
-import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef, TemplateRef } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef, TemplateRef, OnDestroy } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
+import { ValueState } from '../../models/value-state.model';
+import { ValidPositiveNumber, NaNToNil, LeadingNil, EmptyStringToNil, MultiNilToOne } from './../../helpers/chains.helper';
+
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -14,11 +20,12 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
     },
   ],
 })
-export class PositiveNumbersInputComponent implements OnInit, ControlValueAccessor {
+export class PositiveNumbersInputComponent implements OnInit, ControlValueAccessor, OnDestroy {
 
-  public value: string;
+  public state: ValueState = new ValueState();
   public disabled: boolean;
   public touched: Function;
+  public formControl: FormControl;
 
   @ViewChild('inputControl') public inputControl: ElementRef;
 
@@ -69,8 +76,14 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
   @Input() public suffix: TemplateRef<any>;
 
 
+  /**
+   * Allow leading nil.
+   */
+  @Input() public allowLeadingNil = true;
+
+
   private change: Function;
-  private _lastValue: string;
+  private _unsubscribe: Subject<boolean> = new Subject<boolean>();
 
 
   constructor() { }
@@ -79,30 +92,46 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
   ngOnInit() {
     this.change = (value: string) => { };
     this.touched = () => { };
+
+    this.formControl = new FormControl();
+
+    this.formControl.valueChanges.pipe(
+      takeUntil(this._unsubscribe)
+    )
+      .subscribe((value: string) => {
+        this.onChange(value);
+      });
   }
 
 
-  public onChange(value: string) {
-    // Positive.
-    if (!(this.validNumber(value))) {
-      const cursorPosition = this.inputControl.nativeElement.selectionStart - 1;
+  public onChange(valueString: string) {
 
-      this.inputControl.nativeElement.value = this._lastValue;
+    this.state.dirtyStringLoad(valueString);
 
-      this.inputControl.nativeElement.selectionStart = cursorPosition;
-      this.inputControl.nativeElement.selectionEnd = cursorPosition;
-      return;
-    }
+    // Chains
+    const check1 = new EmptyStringToNil();
+    const check2 = new ValidPositiveNumber();
+    const check3 = new NaNToNil();
+    const check4 = new MultiNilToOne(this.allowLeadingNil);
+    const check5 = new LeadingNil(this.allowLeadingNil);
 
-    this.change(value === '' ? '' : +value);
-    this._lastValue = value;
+    check1.successor = check2;
+    check2.successor = check3;
+    check3.successor = check4;
+    check4.successor = check5;
+
+    this.state = check1.handleState(this.state);
+    this.state = check2.handleState(this.state);
+    this.state = check3.handleState(this.state);
+    this.state = check4.handleState(this.state);
+    this.state = check5.handleState(this.state);
+
+    this.publishState(this.state);
   }
 
 
-  writeValue(value: string): void {
-    this.value = this.validNumber(value) ? value : '';
-
-    this._lastValue = this.value;
+  writeValue(value: number): void {
+    this.onChange(value ? value.toString() : '');
   }
 
 
@@ -117,11 +146,34 @@ export class PositiveNumbersInputComponent implements OnInit, ControlValueAccess
 
 
   setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+
+    this.formControl.enable();
   }
 
 
-  private validNumber(value: string): boolean {
-    return /^\d*$/.test(value);
+  ngOnDestroy() {
+    this._unsubscribe.next(true);
+    this._unsubscribe.unsubscribe();
+  }
+
+
+  private publishState(state: ValueState) {
+
+    const cursorPosition = this.inputControl.nativeElement.selectionStart + state.changeCursorPosition;
+
+    // Publish to input.
+    this.formControl.setValue(state.valueString, { emitEvent: false });
+
+    this.inputControl.nativeElement.selectionStart = cursorPosition;
+    this.inputControl.nativeElement.selectionEnd = cursorPosition;
+
+    this.state.changeCursorPosition = 0;
+
+    // Publish to system.
+    this.change(state.valueNumber);
   }
 }

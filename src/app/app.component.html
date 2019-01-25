@@ -60,6 +60,7 @@
        controlClass="positive-numbers-input"
        formControlName="positiveNumbers"
        placeholder="0"
+       [allowLeadingNil]="false"
        [prefix]="positiveNumbersInputLabel"
        [suffix]="positiveNumbersInputError"
        [additionalClass]="form.get('positiveNumbers').hasError('required') ? 'additional-class' : ''">
