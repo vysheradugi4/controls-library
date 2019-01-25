@@ -197,6 +197,8 @@ shown with two decimals and decimal separator for current locale.
    
 * `additionalClass` – Additional css class for input.
    
+* `allowLeadingNil` – Allows input nil in lead of number (allow by default).
+   
    
 ### Example usage template part
    
@@ -213,6 +215,7 @@ shown with two decimals and decimal separator for current locale.
       controlClass="positive-numbers-input"
       formControlName="positiveNumbers"
       placeholder="0"
+      [allowLeadingNil]="false"
       [prefix]="positiveNumbersInputLabel"
       [suffix]="positiveNumbersInputError"
       [additionalClass]="form.get('positiveNumbers').hasError('required') ? 'additional-class' : ''">
