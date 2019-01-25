@@ -23,7 +23,6 @@ import { ValidPositiveNumber, NaNToNil, LeadingNil, EmptyStringToNil, MultiNilTo
 export class PositiveNumbersInputComponent implements OnInit, ControlValueAccessor, OnDestroy {
 
   public state: ValueState = new ValueState();
-  public disabled: boolean;
   public touched: Function;
   public formControl: FormControl;
 

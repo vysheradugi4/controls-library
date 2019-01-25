@@ -103,3 +103,33 @@ export class LeadingNil extends StatePreparer {
     return state;
   }
 }
+
+
+export class ValidCurrency extends StatePreparer {
+
+  constructor(
+    private positive: boolean
+  ) {
+    super();
+  }
+
+  public handleState(state: ValueState) {
+
+  }
+}
+
+
+export class PrepareCurrencyViewFormat extends StatePreparer {
+
+  constructor(
+    private _locale: string,
+    private _focus: boolean
+  ) {
+    super();
+  }
+
+  public handleState(state: ValueState) {
+    console.log(this._locale, this._focus);
+    return state;
+  }
+}
