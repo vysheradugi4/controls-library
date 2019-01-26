@@ -7,8 +7,7 @@ import { ValueState } from '../../models/value-state.model';
 import {
   ValidCurrencyNumber,
   PrepareCurrencyViewFormatWithoutFocus,
-  PrepareCurrencyViewFormatWithFocus,
-  NaNToNil
+  PrepareCurrencyViewFormatWithFocus
 } from './../../helpers/chains.helper';
 
 
@@ -89,7 +88,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
   /**
    * Positive or positive and negative.
    */
-  @Input() public positive: boolean;
+  @Input() public positive = false;
 
 
   private _focus = false;
@@ -136,7 +135,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
 
     // Chains
     const check1 = new PrepareCurrencyViewFormatWithFocus(this._focus, this.locale);
-    const check2 = new ValidCurrencyNumber(this._focus, this._localeDecimalSeparator);
+    const check2 = new ValidCurrencyNumber(this._focus, this._localeDecimalSeparator, this.positive);
     const check3 = new PrepareCurrencyViewFormatWithoutFocus(this._focus, this.locale);
 
     check1.successor = check2;

@@ -123,7 +123,7 @@ shown with two decimals and decimal separator for current locale.
 (. dot or , comma)). If not defined, will be used app locale.
    
 * `positive` – True if needs only positive or false if needs positive and negative
-numbers (boolean).
+numbers (false by default).
    
 * `prefix` – Template prefix before input form control (TemplateRef<any>).
    

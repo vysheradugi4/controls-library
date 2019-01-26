@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
         Validators.required
       ]),
 
-      currency: new FormControl(12345.24),
+      currency: new FormControl(),
 
       positiveInteger: new FormControl(),
     });

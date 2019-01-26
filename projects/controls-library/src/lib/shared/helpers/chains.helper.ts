@@ -131,14 +131,21 @@ export class ValidCurrencyNumber extends StatePreparer {
 
   constructor(
     private _focus: boolean,
-    private _localeDecimalSeparator: string
+    private _localeDecimalSeparator: string,
+    private _positive: boolean
   ) {
     super();
   }
 
   public handleState(state: ValueState) {
 
-    const re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+    let re: RegExp;
+
+    if (this._positive) {
+      re = new RegExp('^\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+    } else {
+      re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+    }
 
     if (!re.test(state.valueString) && this._focus) {
       state.valueNumber = state.lastValueNumber || 0;
