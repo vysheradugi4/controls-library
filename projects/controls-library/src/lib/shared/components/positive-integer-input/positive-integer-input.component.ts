@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import { ValueState } from '../../models/value-state.model';
-import { ValidPositiveInteger, NaNToNil, LeadingNil, EmptyStringToNil, MultiNilToOne } from './../../helpers/chains.helper';
+import { ValidPositiveInteger, LeadingNil, NaNToNilAndEmptyString } from './../../helpers/chains.helper';
 
 
 @Component({
@@ -108,22 +108,16 @@ export class PositiveIntegerInputComponent implements OnInit, ControlValueAccess
     this.state.dirtyStringLoad(valueString);
 
     // Chains
-    const check1 = new EmptyStringToNil();
-    const check2 = new ValidPositiveInteger();
-    const check3 = new NaNToNil();
-    const check4 = new MultiNilToOne(this.allowLeadingNil);
-    const check5 = new LeadingNil(this.allowLeadingNil);
+    const check1 = new ValidPositiveInteger();
+    const check2 = new NaNToNilAndEmptyString();
+    const check3 = new LeadingNil(this.allowLeadingNil);
 
     check1.successor = check2;
     check2.successor = check3;
-    check3.successor = check4;
-    check4.successor = check5;
 
     this.state = check1.handleState(this.state);
     this.state = check2.handleState(this.state);
     this.state = check3.handleState(this.state);
-    this.state = check4.handleState(this.state);
-    this.state = check5.handleState(this.state);
 
     this.publishState(this.state);
   }

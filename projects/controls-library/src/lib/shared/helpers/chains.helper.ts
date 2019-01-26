@@ -44,7 +44,7 @@ export class ValidPositiveInteger extends StatePreparer {
     }
 
     state.valueNumber = state.lastValueNumber || 0;
-    state.valueString = state.lastValueString || '0';
+    state.valueString = state.lastValueString || '';
     state.changeCursorPosition = -1;
     return state;
   }
@@ -58,6 +58,20 @@ export class NaNToNil extends StatePreparer {
     if (isNaN(state.valueNumber)) {
       state.valueNumber = state.lastValueNumber || 0;
       state.valueString = state.lastValueString || '0';
+    }
+
+    return state;
+  }
+}
+
+
+export class NaNToNilAndEmptyString extends StatePreparer {
+
+  public handleState(state: ValueState) {
+
+    if (isNaN(state.valueNumber)) {
+      state.valueNumber = state.lastValueNumber || 0;
+      state.valueString = state.lastValueString || '';
     }
 
     return state;
@@ -95,7 +109,7 @@ export class LeadingNil extends StatePreparer {
 
   public handleState(state: ValueState) {
 
-    if (!this._allowLeadingNil && /^0+\d+/.test(state.valueString)) {
+    if (!this._allowLeadingNil && /^0+\d*/.test(state.valueString)) {
       state.valueString = state.valueString.replace(/^0+/, '');
       state.changeCursorPosition = -1;
     }
