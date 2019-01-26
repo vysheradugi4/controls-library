@@ -1,7 +1,7 @@
 {
   "name": "controls-library",
-  "version": "2.3.2",
-  "description": "For angular 6+ versions apps. Custom controls for input currency, input with range numbers, percents, positive numbers etc.",
+  "version": "2.4.0",
+  "description": "For angular 6+ versions apps. Custom controls for input currency, input with range numbers, percents, positive integers etc.",
   "keywords": [
     "angular",
     "ngx",
@@ -14,7 +14,7 @@
     "currency",
     "form group",
     "formGroup",
-    "positive numbers input"
+    "positive integer input"
   ],
   "homepage": "https://github.com/vysheradugi4/controls-library#readme",
   "license": "The MIT License (MIT)",
