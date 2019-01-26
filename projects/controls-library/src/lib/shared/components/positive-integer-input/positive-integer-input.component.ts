@@ -9,18 +9,18 @@ import { ValidPositiveInteger, NaNToNil, LeadingNil, EmptyStringToNil, MultiNilT
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'positive-numbers-input',
-  templateUrl: './positive-numbers-input.component.html',
+  selector: 'positive-integer-input',
+  templateUrl: './positive-integer-input.component.html',
   styles: [],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => PositiveNumbersInputComponent),
+      useExisting: forwardRef(() => PositiveIntegerInputComponent),
     },
   ],
 })
-export class PositiveNumbersInputComponent implements OnInit, ControlValueAccessor, OnDestroy {
+export class PositiveIntegerInputComponent implements OnInit, ControlValueAccessor, OnDestroy {
 
   public state: ValueState = new ValueState();
   public touched: Function;

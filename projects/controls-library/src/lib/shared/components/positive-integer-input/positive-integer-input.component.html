@@ -8,8 +8,7 @@
     [class]="controlClass"
     [ngClass]="additionalClass"
     [formControl]="formControl"
-    (blur)="onBlur()"
-    (focus)="onFocus()">
+    (blur)="touched()">
 
     <ng-container *ngTemplateOutlet="suffix"></ng-container>
 </div>

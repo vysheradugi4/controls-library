@@ -123,7 +123,7 @@ shown with two decimals and decimal separator for current locale.
 (. dot or , comma)). If not defined, will be used app locale.
    
 * `positive` – True if needs only positive or false if needs positive and negative
-numbers (boolean).
+numbers (false by default).
    
 * `prefix` – Template prefix before input form control (TemplateRef<any>).
    
@@ -164,7 +164,7 @@ numbers (boolean).
 ```
    
    
-## Positive numbers input form control.
+## Positive integer input form control.
 
 Add form tag in your template with defined form group name.
 
@@ -175,12 +175,12 @@ or use single as single form control with `formControl` attribute.
    
 Add 
    
-`<positive-numbers-input></positive-numbers-input>`
+`<positive-integer-input></positive-integer-input>`
 
-tag for use positive numbers input in your template form.
+tag for use positive integer input in your template form.
    
    
-### Positive numbers input form control attributes.
+### Positive integer input form control attributes.
    
 * `containerClass` – Div container css class.
    
@@ -188,8 +188,7 @@ tag for use positive numbers input in your template form.
    
 * `inputId` – Input form field id.
    
-* `placeholder` – Input placeholder string, if set 0 (nil) placeholder will be 
-shown with two decimals and decimal separator for current locale.
+* `placeholder` – Input placeholder string.
    
 * `prefix` – Template prefix before input form control (TemplateRef<any>).
    
@@ -197,28 +196,31 @@ shown with two decimals and decimal separator for current locale.
    
 * `additionalClass` – Additional css class for input.
    
+* `allowLeadingNil` – Allows input nil in lead of number (allow by default).
+   
    
 ### Example usage template part
    
 ```
 <form [formGroup]="form">
 
-  <ng-template #positiveNumbersInputLabel>
-    <label for="positiveNumbers">Positive numbers input</label><br>
+  <ng-template #positiveIntegerInputLabel>
+    <label for="positiveInteger">Positive integer input</label><br>
   </ng-template>
 
-  <positive-numbers-input
+  <positive-integer-input
       containerClass="input-group"
-      inputId="positiveNumbersInput"
-      controlClass="positive-numbers-input"
-      formControlName="positiveNumbers"
+      inputId="positiveIntegerInput"
+      controlClass="positive-integer-input"
+      formControlName="positiveInteger"
       placeholder="0"
-      [prefix]="positiveNumbersInputLabel"
-      [suffix]="positiveNumbersInputError"
-      [additionalClass]="form.get('positiveNumbers').hasError('required') ? 'additional-class' : ''">
-  </positive-numbers-input>
+      [allowLeadingNil]="false"
+      [prefix]="positiveIntegerInputLabel"
+      [suffix]="positiveIntegerInputError"
+      [additionalClass]="form.get('positiveInteger').hasError('required') ? 'additional-class' : ''">
+  </positive-integer-input>
 
-  <ng-template #positiveNumbersInputError>
+  <ng-template #positiveIntegerInputError>
     <div>
       Required
     </div>

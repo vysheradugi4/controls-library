@@ -23,11 +23,9 @@ export class AppComponent implements OnInit {
         Validators.required
       ]),
 
-      currency: new FormControl('', [
-        Validators.required
-      ]),
+      currency: new FormControl(),
 
-      positiveNumbers: new FormControl(),
+      positiveInteger: new FormControl(),
     });
 
     this.form.get('range').valueChanges
@@ -40,9 +38,9 @@ export class AppComponent implements OnInit {
         console.log('currency value = ', value);
       });
 
-    this.form.get('positiveNumbers').valueChanges
+    this.form.get('positiveInteger').valueChanges
       .subscribe((value) => {
-        console.log('positive numbers value = ', value);
+        console.log('positive integer value = ', value);
       });
   }
 }

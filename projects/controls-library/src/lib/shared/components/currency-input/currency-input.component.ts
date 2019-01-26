@@ -1,7 +1,14 @@
-import { Component, OnInit, Input, TemplateRef, forwardRef, Inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild, ElementRef, TemplateRef, OnDestroy, Inject, LOCALE_ID } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
-import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
+import { ValueState } from '../../models/value-state.model';
+import {
+  ValidCurrencyNumber,
+  PrepareCurrencyViewFormatWithoutFocus,
+  PrepareCurrencyViewFormatWithFocus
+} from './../../helpers/chains.helper';
 
 
 @Component({
@@ -17,31 +24,19 @@ import { takeUntil } from 'rxjs/operators';
     },
   ],
 })
-export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
+export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnDestroy {
+
+  public state: ValueState = new ValueState();
+  public touched: Function;
+  public formControl: FormControl;
 
   @ViewChild('inputControl') public inputControl: ElementRef;
 
-  public formControl: FormControl;
-  public disabled: boolean;
-  public touched: Function;
-  public focus = false;
 
   /**
-   * Css class name for div container.
+   * Div container css class.
    */
   @Input() public containerClass: string;
-
-
-  /**
-   * Css class name for input.
-   */
-  @Input() public controlClass: string;
-
-
-  /**
-   * Additional css class for input.
-   */
-  @Input() public additionalClass: string;
 
 
   /**
@@ -51,9 +46,25 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   /**
+   * Css class name for input.
+   */
+  @Input() public controlClass = '';
+
+
+  /**
+   * Additional css class for input.
+   */
+  @Input() public additionalClass: string;
+
+
+  /**
    * Input placeholder.
    */
-  @Input() public placeholder: string;
+  @Input() set placeholder(str: string) {
+    if (str) {
+      this._placeholder = str;
+    }
+  }
 
 
   /**
@@ -69,26 +80,26 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
 
 
   /**
-   * Current locale.
+   * Current app locale.
    */
   @Input() public locale: string;
 
 
   /**
-   * Only positive or positive and negative numbers.
+   * Positive or positive and negative.
    */
   @Input() public positive = false;
 
 
-  private _lastValue: string;
-  private _localeDecimalSeparator: string;
-  private _unsubscribe: Subject<boolean> = new Subject<boolean>();
+  private _focus = false;
   private change: Function;
-  private _value: string;
+  private _unsubscribe: Subject<boolean> = new Subject<boolean>();
+  private _placeholder: string;
+  private _localeDecimalSeparator: string;
 
 
   constructor(
-    @Inject(LOCALE_ID) private _appLocale: string
+    @Inject(LOCALE_ID) private _currentLocale: string
   ) { }
 
 
@@ -96,18 +107,11 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
     this.change = (value: string) => { };
     this.touched = () => { };
 
+    this.locale = this.locale || this._currentLocale;
+
+    // Get locale decimal separator.
     this._localeDecimalSeparator = (1.1)
       .toLocaleString(this.locale).substring(1, 2);
-
-    this.locale = this.locale || this._appLocale;
-
-    /**
-     * Setup placeholder. When 0 (nil) will be shown with two decimals
-     * and locale decimal separator.
-     */
-    if (this.placeholder === '0') {
-      this.placeholder = this.addCurrencyFormatting('0');
-    }
 
     this.formControl = new FormControl();
 
@@ -117,57 +121,36 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
       .subscribe((value: string) => {
         this.onChange(value);
       });
+
+    /**
+     * Setup placeholder
+     */
+    this.setPlaceholder();
   }
 
 
-  public onChange(value: string) {
-    if (!this.focus) {
-      return;
-    }
+  public onChange(valueString: string) {
 
-    if (!(this.validDecimal(value))) {
-      const cursorPosition = this.inputControl.nativeElement.selectionStart - 1;
+    this.state.dirtyStringLoad(valueString);
 
-      this.formControl.setValue(this._lastValue);
+    // Chains
+    const check1 = new PrepareCurrencyViewFormatWithFocus(this._focus, this.locale);
+    const check2 = new ValidCurrencyNumber(this._focus, this._localeDecimalSeparator, this.positive);
+    const check3 = new PrepareCurrencyViewFormatWithoutFocus(this._focus, this.locale);
 
-      this.inputControl.nativeElement.selectionStart = cursorPosition;
-      this.inputControl.nativeElement.selectionEnd = cursorPosition;
-      return;
-    }
+    check1.successor = check2;
+    check2.successor = check3;
 
-    if (isNaN(this.localeDecimalToNumber(value))) {
+    this.state = check1.handleState(this.state);
+    this.state = check2.handleState(this.state);
+    this.state = check3.handleState(this.state);
 
-      if (value === '-' || value === this._localeDecimalSeparator) {
-        this._lastValue = value;
-        return;
-      }
-
-      this._lastValue = '';
-
-      this.change(this._lastValue);
-      return;
-    }
-
-    this.change(value === '' ? 0 : this.localeDecimalToNumber(value));  
-    this._value = value;
-    this._lastValue = value;
-  }
-
-
-  public onTouched() {
-    const formattedValue = this.addCurrencyFormatting(this._value);
-    this.focus = false;
-    this.formControl.setValue(formattedValue);
-    this.touched();
+    this.publishState(this.state);
   }
 
 
   writeValue(value: number): void {
-    const newValue = value || value === 0 ? value.toLocaleString(this.locale) : '';
-
-    this.formControl.setValue(newValue);
-
-    this._lastValue = newValue;
+    this.onChange(value ? value.toString() : '');
   }
 
 
@@ -191,41 +174,57 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
   }
 
 
-  private validDecimal(value: string) {
-    let re: RegExp;
-
-    if (this.positive) {
-      re = new RegExp('^\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
-    } else {
-      re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
-    }
-
-    return re.test(value);
+  public onFocus() {
+    this._focus = true;
+    this.setPlaceholder();
+    this.onChange(this.state.valueString);
   }
 
 
-  /**
-   * Convert string with locale number (comma separator) to number.
-   * @param str String for convert.
-   * @returns Number.
-   */
-  private localeDecimalToNumber(str: string): number {
-    if (!str) {
-      return 0;
-    }
-
-    return parseFloat(str.replace(this._localeDecimalSeparator, '.'));
+  public onBlur() {
+    this._focus = false;
+    this.setPlaceholder();
+    this.onChange(this.state.valueString);
+    this.touched();
   }
 
 
-  /**
-   * For add two decimals to input value, thousands separators.
-   * @param num String with number in locale version.
-   * @returns String with number in locale version (locale decimal separator,
-   * comma or dot).
-   */
-  private addCurrencyFormatting(num: string): string {
-    const numberValue = this.localeDecimalToNumber(num);
-    return numberValue.toLocaleString(this.locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  ngOnDestroy() {
+    this._unsubscribe.next(true);
+    this._unsubscribe.unsubscribe();
+  }
+
+
+  private setPlaceholder() {
+
+    if (this._focus) {
+      this.inputControl.nativeElement.placeholder = '';
+      return;
+    }
+
+    if (this._placeholder && this._placeholder !== '0') {
+      this.inputControl.nativeElement.placeholder = this._placeholder;
+      return;
+    }
+
+    // For '0' as string for placehloder set format depends on current locale.
+    this.inputControl.nativeElement.placeholder = `0${this._localeDecimalSeparator}00`;
+  }
+
+
+  private publishState(state: ValueState) {
+
+    const cursorPosition = this.inputControl.nativeElement.selectionStart + state.changeCursorPosition;
+
+    // Publish to input.
+    this.formControl.setValue(state.valueString, { emitEvent: false });
+
+    this.inputControl.nativeElement.selectionStart = cursorPosition;
+    this.inputControl.nativeElement.selectionEnd = cursorPosition;
+
+    this.state.changeCursorPosition = 0;
+
+    // Publish to system.
+    this.change(state.valueNumber);
   }
 }
