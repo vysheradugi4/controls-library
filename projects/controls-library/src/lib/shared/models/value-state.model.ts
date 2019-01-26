@@ -2,6 +2,13 @@ export class ValueState {
 
   public changeCursorPosition = 0;
 
+
+  /**
+   * ValueString used grouping separators, such as thousands separators or
+   * thousand/lakh/crore separators.
+   */
+  public useGrouping = false;
+
   private _valueString = '';
   private _valueNumber = 0;
   private _lastValueString = '';

@@ -31,12 +31,12 @@ export class EmptyStringToNil extends StatePreparer {
 }
 
 
-export class ValidPositiveNumber extends StatePreparer {
+export class ValidPositiveInteger extends StatePreparer {
 
   public handleState(state: ValueState): ValueState {
 
     if (/^\d*$/.test(state.valueString)) {
-      state.valueNumber = parseFloat(state.valueString);
+      state.valueNumber = parseInt(state.valueString, 10);
 
       // For init lastValueString.
       state.valueString = state.valueString;
@@ -105,24 +105,21 @@ export class LeadingNil extends StatePreparer {
 }
 
 
-export class DecimalSeparatorViewResolver extends StatePreparer {
+export class PrepareCurrencyViewFormatWithFocus extends StatePreparer {
 
   constructor(
-    private _localeDecimalSeparator: string,
+    private _focus: boolean,
+    private _locale: string
   ) {
     super();
   }
 
   public handleState(state: ValueState) {
 
-
-
-    const re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
-
-    if (!re.test(state.valueString)) {
-      state.valueNumber = state.lastValueNumber || 0;
-      state.valueString = state.lastValueString || '0';
-      state.changeCursorPosition = -1;
+    if (this._focus && state.useGrouping) {
+      state.valueString = state.valueNumber
+        .toLocaleString(this._locale, { useGrouping: false, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      state.useGrouping = false;
     }
 
     return state;
@@ -130,15 +127,52 @@ export class DecimalSeparatorViewResolver extends StatePreparer {
 }
 
 
-export class PrepareCurrencyViewFormat extends StatePreparer {
+export class ValidCurrencyNumber extends StatePreparer {
 
   constructor(
-    private _focus: boolean
+    private _focus: boolean,
+    private _localeDecimalSeparator: string
   ) {
     super();
   }
 
   public handleState(state: ValueState) {
+
+    const re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+
+    if (!re.test(state.valueString) && this._focus) {
+      state.valueNumber = state.lastValueNumber || 0;
+      state.valueString = state.lastValueString || '';
+      state.changeCursorPosition = -1;
+      return state;
+    }
+
+    // For init lastValueString.
+    state.valueString = state.valueString;
+
+    state.valueNumber = parseFloat(state.valueString.replace(this._localeDecimalSeparator, '.')) || 0;
+    return state;
+  }
+}
+
+
+export class PrepareCurrencyViewFormatWithoutFocus extends StatePreparer {
+
+  constructor(
+    private _focus: boolean,
+    private _locale: string
+  ) {
+    super();
+  }
+
+  public handleState(state: ValueState) {
+
+    if (!this._focus) {
+      state.valueString = state.valueNumber
+        .toLocaleString(this._locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      state.useGrouping = true;
+    }
+
     return state;
   }
 }

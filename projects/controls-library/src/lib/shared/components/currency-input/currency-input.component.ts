@@ -4,7 +4,12 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import { ValueState } from '../../models/value-state.model';
-import { EmptyStringToNil, PrepareCurrencyViewFormat, DecimalSeparatorViewResolver } from './../../helpers/chains.helper';
+import {
+  ValidCurrencyNumber,
+  PrepareCurrencyViewFormatWithoutFocus,
+  PrepareCurrencyViewFormatWithFocus,
+  NaNToNil
+} from './../../helpers/chains.helper';
 
 
 @Component({
@@ -130,12 +135,14 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
     this.state.dirtyStringLoad(valueString);
 
     // Chains
+    const check1 = new PrepareCurrencyViewFormatWithFocus(this._focus, this.locale);
+    const check2 = new ValidCurrencyNumber(this._focus, this._localeDecimalSeparator);
+    const check3 = new PrepareCurrencyViewFormatWithoutFocus(this._focus, this.locale);
 
-    const check2 = new DecimalSeparatorViewResolver(this._localeDecimalSeparator);
-    const check3 = new PrepareCurrencyViewFormat(this._focus);
-
+    check1.successor = check2;
     check2.successor = check3;
 
+    this.state = check1.handleState(this.state);
     this.state = check2.handleState(this.state);
     this.state = check3.handleState(this.state);
 
@@ -171,12 +178,14 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
   public onFocus() {
     this._focus = true;
     this.setPlaceholder();
+    this.onChange(this.state.valueString);
   }
 
 
   public onBlur() {
     this._focus = false;
     this.setPlaceholder();
+    this.onChange(this.state.valueString);
     this.touched();
   }
 
@@ -196,6 +205,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
 
     if (this._placeholder && this._placeholder !== '0') {
       this.inputControl.nativeElement.placeholder = this._placeholder;
+      return;
     }
 
     // For '0' as string for placehloder set format depends on current locale.
