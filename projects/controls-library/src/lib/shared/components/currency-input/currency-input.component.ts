@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import { ValueState } from '../../models/value-state.model';
-import { EmptyStringToNil, PrepareCurrencyViewFormat } from './../../helpers/chains.helper';
+import { EmptyStringToNil, PrepareCurrencyViewFormat, DecimalSeparatorViewResolver } from './../../helpers/chains.helper';
 
 
 @Component({
@@ -58,7 +58,7 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
    */
   @Input() set placeholder(str: string) {
     if (str) {
-      this.inputControl.nativeElement.placeholder = str;
+      this._placeholder = str;
     }
   }
 
@@ -90,6 +90,8 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
   private _focus = false;
   private change: Function;
   private _unsubscribe: Subject<boolean> = new Subject<boolean>();
+  private _placeholder: string;
+  private _localeDecimalSeparator: string;
 
 
   constructor(
@@ -103,6 +105,10 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
 
     this.locale = this.locale || this._currentLocale;
 
+    // Get locale decimal separator.
+    this._localeDecimalSeparator = (1.1)
+      .toLocaleString(this.locale).substring(1, 2);
+
     this.formControl = new FormControl();
 
     this.formControl.valueChanges.pipe(
@@ -111,6 +117,11 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
       .subscribe((value: string) => {
         this.onChange(value);
       });
+
+    /**
+     * Setup placeholder
+     */
+    this.setPlaceholder();
   }
 
 
@@ -119,14 +130,15 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
     this.state.dirtyStringLoad(valueString);
 
     // Chains
-    const check1 = new EmptyStringToNil();
-    const check2 = new PrepareCurrencyViewFormat(this.locale, this._focus);
 
-    check1.successor = check2;
+    const check2 = new DecimalSeparatorViewResolver(this._localeDecimalSeparator);
+    const check3 = new PrepareCurrencyViewFormat(this._focus);
 
-    this.state = check1.handleState(this.state);
+    check2.successor = check3;
+
     this.state = check2.handleState(this.state);
-    
+    this.state = check3.handleState(this.state);
+
     this.publishState(this.state);
   }
 
@@ -158,11 +170,13 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
 
   public onFocus() {
     this._focus = true;
+    this.setPlaceholder();
   }
 
 
   public onBlur() {
     this._focus = false;
+    this.setPlaceholder();
     this.touched();
   }
 
@@ -170,6 +184,22 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
   ngOnDestroy() {
     this._unsubscribe.next(true);
     this._unsubscribe.unsubscribe();
+  }
+
+
+  private setPlaceholder() {
+
+    if (this._focus) {
+      this.inputControl.nativeElement.placeholder = '';
+      return;
+    }
+
+    if (this._placeholder && this._placeholder !== '0') {
+      this.inputControl.nativeElement.placeholder = this._placeholder;
+    }
+
+    // For '0' as string for placehloder set format depends on current locale.
+    this.inputControl.nativeElement.placeholder = `0${this._localeDecimalSeparator}00`;
   }
 
 

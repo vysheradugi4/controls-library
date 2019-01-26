@@ -105,16 +105,27 @@ export class LeadingNil extends StatePreparer {
 }
 
 
-export class ValidCurrency extends StatePreparer {
+export class DecimalSeparatorViewResolver extends StatePreparer {
 
   constructor(
-    private positive: boolean
+    private _localeDecimalSeparator: string,
   ) {
     super();
   }
 
   public handleState(state: ValueState) {
 
+
+
+    const re = new RegExp('^-?\\d*[' + this._localeDecimalSeparator + ']?\\d{0,2}$');
+
+    if (!re.test(state.valueString)) {
+      state.valueNumber = state.lastValueNumber || 0;
+      state.valueString = state.lastValueString || '0';
+      state.changeCursorPosition = -1;
+    }
+
+    return state;
   }
 }
 
@@ -122,14 +133,12 @@ export class ValidCurrency extends StatePreparer {
 export class PrepareCurrencyViewFormat extends StatePreparer {
 
   constructor(
-    private _locale: string,
     private _focus: boolean
   ) {
     super();
   }
 
   public handleState(state: ValueState) {
-    console.log(this._locale, this._focus);
     return state;
   }
 }
