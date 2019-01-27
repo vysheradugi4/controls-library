@@ -58,7 +58,7 @@ export class PositiveIntegerInputComponent implements OnInit, ControlValueAccess
    */
   @Input() set placeholder(str: string) {
     if (str) {
-      this.inputControl.nativeElement.placeholder = str;
+      this._placeholder = str;
     }
   }
 
@@ -83,7 +83,8 @@ export class PositiveIntegerInputComponent implements OnInit, ControlValueAccess
 
   private change: Function;
   private _unsubscribe: Subject<boolean> = new Subject<boolean>();
-
+  private _placeholder: string;
+  private _focus: boolean;
 
   constructor() { }
 
@@ -100,6 +101,11 @@ export class PositiveIntegerInputComponent implements OnInit, ControlValueAccess
       .subscribe((value: string) => {
         this.onChange(value);
       });
+
+    /**
+     * Setup placeholder
+     */
+    this.setPlaceholder();
   }
 
 
@@ -120,6 +126,21 @@ export class PositiveIntegerInputComponent implements OnInit, ControlValueAccess
     this.state = check3.handleState(this.state);
 
     this.publishState(this.state);
+  }
+
+
+  public onFocus() {
+    this._focus = true;
+    this.setPlaceholder();
+    this.onChange(this.state.valueString);
+  }
+
+
+  public onBlur() {
+    this._focus = false;
+    this.setPlaceholder();
+    this.onChange(this.state.valueString);
+    this.touched();
   }
 
 
@@ -151,6 +172,17 @@ export class PositiveIntegerInputComponent implements OnInit, ControlValueAccess
   ngOnDestroy() {
     this._unsubscribe.next(true);
     this._unsubscribe.unsubscribe();
+  }
+
+
+  private setPlaceholder() {
+
+    if (this._focus) {
+      this.inputControl.nativeElement.placeholder = '';
+      return;
+    }
+
+    this.inputControl.nativeElement.placeholder = this._placeholder;
   }
 
 
