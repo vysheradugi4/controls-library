@@ -59,7 +59,10 @@ export class PositiveIntegerInputComponent implements OnInit, ControlValueAccess
   @Input() set placeholder(str: string) {
     if (str) {
       this._placeholder = str;
+      return;
     }
+
+    this._placeholder = '';
   }
 
 

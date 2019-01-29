@@ -63,7 +63,10 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
   @Input() set placeholder(str: string) {
     if (str) {
       this._placeholder = str;
+      return;
     }
+
+    this._placeholder = '';
   }
 
 
