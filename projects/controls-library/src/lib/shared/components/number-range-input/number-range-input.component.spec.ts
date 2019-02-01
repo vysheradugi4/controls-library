@@ -16,6 +16,7 @@ describe('NumberRangeInputComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NumberRangeInputComponent);
     component = fixture.componentInstance;
+    component.range = '0..100';
     fixture.detectChanges();
   });
 

@@ -1,3 +1,4 @@
+import { ReactiveFormsModule } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CurrencyInputComponent } from './currency-input.component';
@@ -8,6 +9,9 @@ describe('CurrencyInputComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule,
+      ],
       declarations: [ CurrencyInputComponent ]
     })
     .compileComponents();

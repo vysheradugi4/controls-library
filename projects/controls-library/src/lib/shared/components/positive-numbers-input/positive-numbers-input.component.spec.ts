@@ -1,3 +1,4 @@
+import { ReactiveFormsModule } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PositiveNumbersInputComponent } from './positive-numbers-input.component';
@@ -8,6 +9,9 @@ describe('PositiveNumbersInputComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule,
+      ], 
       declarations: [ PositiveNumbersInputComponent ]
     })
     .compileComponents();
