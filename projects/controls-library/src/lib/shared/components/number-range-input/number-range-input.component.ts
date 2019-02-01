@@ -90,7 +90,6 @@ export class NumberRangeInputComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
     if (isNaN(this._max) || isNaN(this._min)) {
-      console.log('zzzzzzzzzzzzz', this._max);
       throw new Error('Range required or values error');
     }
 
