@@ -4,11 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import { ValueState } from '../../models/value-state.model';
-import {
-  ValidCurrencyNumber,
-  PrepareCurrencyViewFormatWithoutFocus,
-  PrepareCurrencyViewFormatWithFocus
-} from './../../helpers/chains.helper';
+import { PrepareCurrencyViewFormatWithFocus, ValidCurrencyNumber, PrepareCurrencyViewFormatWithoutFocus } from './../../helpers/currency-chains.helper';
 
 
 @Component({
@@ -152,7 +148,11 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
   }
 
 
-  writeValue(value: number): void {
+  writeValue(value: number | string): void {
+    if (typeof(value) === 'string') {
+      throw new Error('Input value must be a number.');
+    }
+
     this.onChange(value ? value.toString() : '');
   }
 
@@ -198,14 +198,14 @@ export class CurrencyInputComponent implements OnInit, ControlValueAccessor, OnD
   }
 
 
-  private setPlaceholder() {
+  private setPlaceholder(): void {
 
-    if (this._focus) {
+    if (!this._placeholder || this._focus) {
       this.inputControl.nativeElement.placeholder = '';
       return;
     }
 
-    if (this._placeholder && this._placeholder !== '0') {
+    if (this._placeholder !== '0') {
       this.inputControl.nativeElement.placeholder = this._placeholder;
       return;
     }
