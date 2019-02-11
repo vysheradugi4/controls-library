@@ -43,7 +43,7 @@ export class ValidPositiveInteger extends StatePreparer {
       return state;
     }
 
-    state.valueNumber = state.lastValueNumber || null;
+    state.valueNumber = state.lastValueNumber || 0;
     state.valueString = state.lastValueString || '';
     state.changeCursorPosition = -1;
     return state;
@@ -70,7 +70,7 @@ export class NaNToNilAndEmptyString extends StatePreparer {
   public handleState(state: ValueState) {
 
     if (isNaN(state.valueNumber)) {
-      state.valueNumber = state.lastValueNumber || null;
+      state.valueNumber = state.lastValueNumber || 0;
       state.valueString = state.lastValueString || '';
     }
 
