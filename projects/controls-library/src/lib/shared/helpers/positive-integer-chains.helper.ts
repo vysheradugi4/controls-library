@@ -1,4 +1,4 @@
-import { ValueState } from '../models/value-state.model';
+import { ValueState } from '../models/positive-integer-value-state.model';
 
 
 class StatePreparer {

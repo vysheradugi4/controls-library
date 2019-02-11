@@ -3,8 +3,8 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/f
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
-import { ValueState } from '../../models/value-state.model';
-import { ValidPositiveInteger, LeadingNil, NaNToNilAndEmptyString } from './../../helpers/chains.helper';
+import { ValidPositiveInteger, LeadingNil, NaNToNilAndEmptyString } from './../../helpers/positive-integer-chains.helper';
+import { ValueState } from '../../models/positive-integer-value-state.model';
 
 
 @Component({
