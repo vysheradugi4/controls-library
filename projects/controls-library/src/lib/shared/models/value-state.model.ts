@@ -2,35 +2,39 @@ export class ValueState {
 
   public changeCursorPosition = 0;
 
-
   /**
    * ValueString used grouping separators, such as thousands separators or
    * thousand/lakh/crore separators.
    */
   public useGrouping = false;
 
+  /**
+   * String from user's input or write value.
+   */
+  private _enteredString = '';
+
   private _valueString = '';
-  private _valueNumber = 0;
-  private _lastValueString = '';
-  private _lastValueNumber = 0;
+  private _valueNumber = null;
+  private _lastValidValueString = '';
+  private _lastValidValueNumber = null;
 
   constructor() { }
 
 
   public dirtyStringLoad(valueString: string) {
-    this._valueString = valueString;
+    this._enteredString = valueString;
   }
 
 
   public set valueString(value: string) {
     this._valueString = value;
-    this._lastValueString = value;
+    this._lastValidValueString = value;
   }
 
 
   public set valueNumber(value: number) {
     this._valueNumber = value;
-    this._lastValueNumber = value;
+    this._lastValidValueNumber = value;
   }
 
 
@@ -45,11 +49,11 @@ export class ValueState {
 
 
   public get lastValueString() {
-    return this._lastValueString;
+    return this._lastValidValueString;
   }
 
 
   public get lastValueNumber() {
-    return this._lastValueNumber;
+    return this._lastValidValueNumber;
   }
 }
