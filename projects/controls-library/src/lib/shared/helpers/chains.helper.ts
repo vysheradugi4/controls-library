@@ -12,20 +12,16 @@ class StatePreparer {
     return this._successor;
   }
 
-  public handleState(state: ValueState): void { }
-}
+  public handle(state: ValueState): ValueState {
 
-
-export class EmptyStringToNil extends StatePreparer {
-
-  public handleState(state: ValueState): ValueState {
-
-    if (state.valueString === '') {
-      state.valueNumber = 0;
-      state.valueString = '0';
-      state.changeCursorPosition = 1;
+    if (state.enteredString === null) {
+      return state;
     }
 
+    return this.handleState(state);
+  }
+
+  public handleState(state: ValueState): ValueState {
     return state;
   }
 }
@@ -35,11 +31,11 @@ export class ValidPositiveInteger extends StatePreparer {
 
   public handleState(state: ValueState): ValueState {
 
-    if (/^\d*$/.test(state.valueString)) {
-      state.valueNumber = parseInt(state.valueString, 10);
+    if (/^\d*$/.test(state.enteredString)) {
+      state.valueNumber = parseInt(state.enteredString, 10);
 
       // For init lastValueString.
-      state.valueString = state.valueString;
+      state.valueString = state.enteredString;
       return state;
     }
 
@@ -51,13 +47,14 @@ export class ValidPositiveInteger extends StatePreparer {
 }
 
 
-export class NaNToNilAndEmptyString extends StatePreparer {
+export class NaNToNullAndEmptyString extends StatePreparer {
 
   public handleState(state: ValueState) {
 
     if (isNaN(state.valueNumber)) {
       state.valueNumber = state.lastValueNumber || null;
       state.valueString = state.lastValueString || '';
+      state.enteredString = null;
     }
 
     return state;
@@ -68,14 +65,18 @@ export class NaNToNilAndEmptyString extends StatePreparer {
 export class LeadingNil extends StatePreparer {
 
   constructor(
-    private _allowLeadingNil: boolean = true
+    private _allowLeadingNil: boolean
   ) {
     super();
   }
 
   public handleState(state: ValueState) {
 
-    if (!this._allowLeadingNil && /^0+\d*/.test(state.valueString)) {
+    if (this._allowLeadingNil) {
+      return state;
+    }
+
+    if (/^0+\d+/.test(state.valueString)) {
       state.valueString = state.valueString.replace(/^0+/, '');
       state.changeCursorPosition = -1;
     }

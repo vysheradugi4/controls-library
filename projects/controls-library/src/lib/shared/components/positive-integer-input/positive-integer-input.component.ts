@@ -2,7 +2,7 @@ import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { BaseComponent } from './../../helpers/base-component';
-import { ValidPositiveInteger, NaNToNilAndEmptyString, LeadingNil } from './../../helpers/chains.helper';
+import { ValidPositiveInteger, NaNToNullAndEmptyString, LeadingNil } from './../../helpers/chains.helper';
 
 
 @Component({
@@ -22,19 +22,21 @@ export class PositiveIntegerInputComponent extends BaseComponent {
 
   public onChange(valueString: string) {
 
-    this.state.dirtyStringLoad(valueString);
+    this.state.enteredString = valueString;
 
     // Chains
     const check1 = new ValidPositiveInteger();
-    const check2 = new NaNToNilAndEmptyString();
+    const check2 = new NaNToNullAndEmptyString();
     const check3 = new LeadingNil(this.allowLeadingNil);
 
     check1.successor = check2;
     check2.successor = check3;
 
-    this.state = check1.handleState(this.state);
-    this.state = check2.handleState(this.state);
-    this.state = check3.handleState(this.state);
+    this.state = check1.handle(this.state);
+    this.state = check2.handle(this.state);
+    this.state = check3.handle(this.state);
+
+    this.state.enteredString = null;
 
     this.publishState(this.state);
   }

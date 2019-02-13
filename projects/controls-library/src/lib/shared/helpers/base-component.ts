@@ -89,18 +89,17 @@ export abstract class BaseComponent implements OnInit, ControlValueAccessor, OnD
     this.setPlaceholder();
   }
 
+  public onChange(value: string) { };
 
-  public onChange(value: string) { }
 
-
-  public onFocus() {
+  public onFocus(): void {
     this._focus = true;
     this.setPlaceholder();
     this.onChange(this.state.valueString);
   }
 
 
-  public onBlur() {
+  public onBlur(): void {
     this._focus = false;
     this.setPlaceholder();
     this.onChange(this.state.valueString);
@@ -108,8 +107,9 @@ export abstract class BaseComponent implements OnInit, ControlValueAccessor, OnD
   }
 
 
-  writeValue(value: string): void {
-    this.onChange(value ? value.toString() : '');
+  writeValue(value: number): void {
+    const str: string = value || value === 0 ? value.toString() : ''
+    this.onChange(str);
   }
 
 
@@ -133,10 +133,10 @@ export abstract class BaseComponent implements OnInit, ControlValueAccessor, OnD
   }
 
 
-  public setPlaceholder() { }
+  public setPlaceholder(): void { }
 
 
-  public publishState(state: ValueState) {
+  public publishState(state: ValueState): void {
 
     const cursorPosition = this.inputControl.nativeElement.selectionStart + state.changeCursorPosition;
 

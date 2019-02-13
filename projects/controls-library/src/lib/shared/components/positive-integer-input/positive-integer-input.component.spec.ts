@@ -119,4 +119,179 @@ describe('PositiveIntegerInputComponent', () => {
 
     expect(input.placeholder).toEqual('async placeholder');
   }));
+
+
+
+  /**
+   * Write Value.
+   */
+
+  it('should show empty string in input when wrote value is null', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.writeValue(null);
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('');
+  });
+
+  it('should show empty string in input when wrote value is undefined', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.writeValue(undefined);
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('');
+  });
+
+  it('should show empty string in input when wrote value is minus', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.writeValue(-4);
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('');
+  });
+
+  it('should show 0 in input when wrote value is 0', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.writeValue(0);
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('0');
+  });
+
+  it('should show 1 in input when wrote value is 1', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.writeValue(1);
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('1');
+  });
+
+  it('should show 100500 in input when wrote value is 100500', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.writeValue(100500);
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('100500');
+  });
+
+  it('should show 1 in input when wrote value is 1 and then `a` (tests last value)', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.onChange('1');
+    fixture.detectChanges();
+
+    component.onChange('1a');
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('1');
+  });
+
+  it('should show 1 in input when wrote value is minus and then 1 (tests last value)', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.onChange('-');
+    fixture.detectChanges();
+
+    component.onChange('1');
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('1');
+  });
+
+  it('should change value in input to 100 after second init', fakeAsync(() => {
+    const input = fixture.nativeElement.querySelector('input');
+    component.onChange('2');
+    fixture.detectChanges();
+
+    component.writeValue(100);
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('100');
+  }));
+
+  it('should allow leading nil by default', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.onChange('0123');
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('0123');
+  });
+
+  it('should prevent leading nil', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.allowLeadingNil = false;
+    fixture.detectChanges();
+
+    component.onChange('0123');
+    fixture.detectChanges();
+
+    expect(input.value).toEqual('123');
+  });
+
+  it('should send to form value and subscribers 1', () => {
+    const input = fixture.nativeElement.querySelector('input');
+
+    component.onChange('1');
+    fixture.detectChanges();
+
+    expect(component.state.valueNumber).toEqual(1);
+  });
+
+  it('should send to form value and subscribers 1', () => {
+    component.writeValue(1);
+    fixture.detectChanges();
+
+    expect(component.state.valueNumber).toEqual(1);
+  });
+
+  it('should send to form value and subscribers null, allowLeadingNull is on', () => {
+    component.writeValue(0);
+    fixture.detectChanges();
+
+    expect(component.state.valueNumber).toEqual(0);
+  });
+
+  it('should send to form value and subscribers 0', () => {
+    component.onChange('0');
+    fixture.detectChanges();
+
+    expect(component.state.valueNumber).toEqual(0);
+  });
+
+  it('should send to form value and subscribers 1 after enter 1 and then `a`', () => {
+    component.onChange('1');
+    fixture.detectChanges();
+
+    component.onChange('1a');
+    fixture.detectChanges();
+
+    expect(component.state.valueNumber).toEqual(1);
+  });
+
+  it('should set input value as 12 when formControl are disabled', () => {
+    component.setDisabledState(true);
+    component.writeValue(12);
+    fixture.detectChanges();
+
+    expect(component.state.valueNumber).toEqual(12);
+  });
+
+  it('should set input value as 12 when formControl are disabled, and after change value to 14', () => {
+    component.setDisabledState(true);
+    component.writeValue(12);
+    fixture.detectChanges();
+
+    component.writeValue(14);
+    fixture.detectChanges();
+
+    expect(component.state.valueNumber).toEqual(14);
+  });
 });

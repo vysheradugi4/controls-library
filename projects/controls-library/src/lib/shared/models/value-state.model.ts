@@ -11,7 +11,7 @@ export class ValueState {
   /**
    * String from user's input or write value.
    */
-  private _enteredString = '';
+  private _enteredString = null;
 
   private _valueString = '';
   private _valueNumber = null;
@@ -21,7 +21,7 @@ export class ValueState {
   constructor() { }
 
 
-  public dirtyStringLoad(valueString: string) {
+  public set enteredString(valueString: string) {
     this._enteredString = valueString;
   }
 
@@ -55,5 +55,10 @@ export class ValueState {
 
   public get lastValueNumber() {
     return this._lastValidValueNumber;
+  }
+
+
+  public get enteredString() {
+    return this._enteredString;
   }
 }
